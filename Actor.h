@@ -7,22 +7,23 @@
 #include "Item.h"
 
 class PlayerData;
+class MonsterData;
 
 class Actor
 {
 protected:
     std::string name;
     
-    int level;
+    int level = 1;
     
-    int baseHP;
-    int baseDamage;
-    int baseDefense;
+    int baseHP = 0;
+    int baseDamage = 0;
+    int baseDefense = 0;
 
-    int currentHP;
+    int currentHP = 0;
     
-    int incDamage;
-    int incDefense;
+    int incDamage = 0;
+    int incDefense = 0;
 
     bool isDead()
     {
@@ -96,12 +97,13 @@ private:
     
     std::vector<Item*> inventory;
 
-    void setData(PlayerData* data);
     
 public:
     Player() : ItemUseable(this) { }
 
+    void setData(PlayerData* data);
     void levelUp();
+    bool IsNicknameEmpty();
     
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
@@ -111,7 +113,14 @@ public:
 
 class Monster : public Actor
 {
+private:
+    MonsterData* data;
+    
 public:
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
+
+    void setData(MonsterData* data);
+
+    const std::string getName() const;
 };

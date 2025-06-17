@@ -5,7 +5,9 @@
 #include <vector>
 #include <unordered_map>
 
-class DataManager;
+#include "Manager.h"
+
+class DataInitializer;
 class GameData;
 class PlayerData;
 class MonsterData;
@@ -40,6 +42,28 @@ public:
     }
 };
 
+class DataManager : public Manager<DataManager>
+{
+private:
+    DataInitializer* initializer;
+
+public:
+    DataManager();
+
+    virtual ~DataManager() override;
+    
+    DataContainer<PlayerData> playerData;
+    DataContainer<MonsterData> monsterData;
+    DataContainer<ItemData> itemData;
+
+    virtual void InitGame() override;
+    virtual void EnterGame() override;
+    virtual bool UpdateGame() override;
+    virtual void ExitGame() override;
+
+    void PrintData();
+};
+
 class DataInitializer
 {
 private:
@@ -50,27 +74,4 @@ private:
 public:
     DataInitializer();
     void Execute(DataManager& dataManager);
-};
-
-class DataManager
-{
-private:
-    DataInitializer* initializer;
-    
-    static DataManager* instance;
-
-public:
-    DataManager();
-
-    ~DataManager();
-    
-    DataContainer<PlayerData> playerData;
-    DataContainer<MonsterData> monsterData;
-    DataContainer<ItemData> itemData;
-
-    static DataManager* Instance();
-
-    void Initialize();
-
-    void PrintData();
 };

@@ -31,5 +31,5 @@ public:
     
     bool Execute();
 
-    Command* getCurrentCommand() const;
+    Command& getCurrentCommand() const;
 };

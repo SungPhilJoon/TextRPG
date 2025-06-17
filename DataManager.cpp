@@ -1,3 +1,4 @@
+#include "Manager.h"
 #include "DataManager.h"
 #include "GameData.h"
 #include "Parser.h"
@@ -79,11 +80,9 @@ void DataInitializer::Execute(DataManager& dataManager)
     }
 }
 
-DataManager::DataManager() : initializer(new DataInitializer()) { }
+DataManager* Manager<DataManager>::instance = nullptr;
 
-DataManager* DataManager::instance = nullptr;
-
-DataManager* DataManager::Instance()
+DataManager* Manager<DataManager>::Instance()
 {
     if (instance == nullptr)
     {
@@ -93,14 +92,34 @@ DataManager* DataManager::Instance()
     return instance;
 }
 
+DataManager::DataManager() : Manager<DataManager>(), initializer(new DataInitializer())
+{
+    
+}
+
 DataManager::~DataManager()
 {
     delete initializer;
 }
 
-void DataManager::Initialize()
+void DataManager::InitGame()
 {
     initializer->Execute(*this);
+}
+
+void DataManager::EnterGame()
+{
+    
+}
+
+bool DataManager::UpdateGame()
+{
+    return true;
+}
+
+void DataManager::ExitGame()
+{
+    
 }
 
 #define Test

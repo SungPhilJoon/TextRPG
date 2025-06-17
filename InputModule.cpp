@@ -47,7 +47,7 @@ bool InputModule::Execute()
     return true;
 }
 
-Command* InputModule::getCurrentCommand() const
+Command& InputModule::getCurrentCommand() const
 {
-    return currentCommand;
+    return *currentCommand;
 }

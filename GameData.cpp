@@ -6,6 +6,8 @@ void PlayerData::InitializeData(DataManager& dataManager, Parser& parser)
 {
     parser.initialize("PlayerData.csv");
         
+        
+        
     int lineCount = parser.getLine();
     for (int i = 0; i < lineCount; ++i)
     {

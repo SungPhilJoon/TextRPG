@@ -45,6 +45,10 @@ public:
     {
         return defense;
     }
+    int getLevel() const
+    {
+        return level;
+    }
 
     static void InitializeData(DataManager& dataManager, Parser& parser);
 };
@@ -70,6 +74,14 @@ public:
     int getDefense() const
     {
         return defense;
+    }
+    int getLevel() const
+    {
+        return level;
+    }
+    const std::string getName() const
+    {
+        return name;
     }
 
     static void InitializeData(DataManager& dataManager, Parser& parser);

@@ -23,16 +23,31 @@ void Player::useItem(Item& item)
 void Player::levelUp()
 {
     increaseLevel();
-    setData(DataManager::Instance()->playerData.getData(level));
+    setData(Manager<DataManager>::Instance()->playerData.getData(level));
+}
+
+bool Player::IsNicknameEmpty()
+{
+    return name.empty();
 }
 
 void Player::setData(PlayerData* data)
 {
     this->data = data;
-        
+
+    level = data->getLevel();
+    
     baseHP = data->getHP();
     baseDamage = data->getDamage();
     baseDefense = data->getDefense();
+
+    currentHP = baseHP;
+
+    int prevIncDamage = incDamage;
+    int prevIncDefense = incDefense;
+
+    incDamage = prevIncDamage;
+    incDefense = prevIncDefense;
 }
 
 void Monster::attack(Actor& target)
@@ -44,4 +59,27 @@ void Monster::damaged(const Actor& attacker)
 {
     int damage = attacker.GetDamage() - this->GetDefense();
     this->DecreaseHP(damage);
+}
+
+void Monster::setData(MonsterData* data)
+{
+    this->data = data;
+
+    level = data->getLevel();
+    
+    baseHP = data->getHP();
+    baseDamage = data->getDamage();
+    baseDefense = data->getDefense();
+
+    name = data->getName();
+
+    currentHP = baseHP;
+
+    incDamage = 0;
+    incDefense = 0;
+}
+
+const std::string Monster::getName() const
+{
+    return data->getName();
 }
