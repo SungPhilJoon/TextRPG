@@ -6,8 +6,8 @@
 
 void MenuContents::InitContents()
 {
-    *sequencer << [this](Command& command) { return !this->IsNickNameEmpty(command); };
-    *sequencer << [this](Command& command) { return this->CanChangeContents(command); };
+    *sequencer << this->IsNickNameNotEmpty;
+    *sequencer << this->CanChangeContents;
 }
 
 void MenuContents::EnterContents()
@@ -23,9 +23,9 @@ void MenuContents::ExitContents()
     
 }
 
-bool MenuContents::IsNickNameEmpty(Command& command)
+bool MenuContents::IsNickNameNotEmpty(Command& command)
 {
-    return GameManager::Instance()->IsNickNameEmpty();
+    return !GameManager::Instance()->IsNickNameEmpty();
 }
 
 bool MenuContents::CanChangeContents(Command& command)

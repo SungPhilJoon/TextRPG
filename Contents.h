@@ -48,7 +48,7 @@ public:
     virtual void EnterContents() override;
     virtual void ExitContents() override;
 
-    bool IsNickNameEmpty(Command& command);
+    bool IsNickNameNotEmpty(Command& command);
     bool CanChangeContents(Command& command);
 };
 
