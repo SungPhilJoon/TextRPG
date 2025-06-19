@@ -13,15 +13,15 @@ class Actor
 {
 protected:
     std::string name;
-    
+
     int level = 1;
-    
+
     int baseHP = 0;
     int baseDamage = 0;
     int baseDefense = 0;
 
     int currentHP = 0;
-    
+
     int incDamage = 0;
     int incDefense = 0;
 
@@ -35,15 +35,20 @@ public:
     {
         this->name = name;
     }
-    
+
     int GetHP() const
     {
         return currentHP;
     }
-    
+
     int GetDamage() const
     {
         return baseDamage * level + incDamage;
+    }
+
+    int GetLevel() const
+    {
+        return level;
     }
 
     int GetDefense() const
@@ -68,7 +73,7 @@ public:
 
     void DecreaseDamage(int damage)
     {
-        this->incDamage = std::max(0, this->incDamage - damage);       
+        this->incDamage = std::max(0, this->incDamage - damage);
     }
 
     void IncreaseDefense(int defense)
@@ -78,7 +83,7 @@ public:
 
     void DecreaseDefense(int defense)
     {
-        this->incDefense = std::max(0, this->incDefense - defense);       
+        this->incDefense = std::max(0, this->incDefense - defense);
     }
 
     void increaseLevel()
@@ -94,28 +99,46 @@ class Player : public Actor, public ItemUseable
 {
 private:
     PlayerData* data;
-    
-    std::vector<Item*> inventory;
 
-    
+    std::vector<Item*> inventory;
+    int exp = 0;
+    int gold = 100;
+    int killCount = 0;
+
 public:
-    Player() : ItemUseable(this) { }
+    Player() : ItemUseable(this) {}
 
     void setData(PlayerData* data);
     void levelUp();
     bool IsNicknameEmpty();
-    
+
+    const std::vector<Item*>& getInventory() const
+    {
+        return inventory;
+    }
+
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
 
     virtual void useItem(Item&) override;
+    // 경험치 얻는 로직 구현
+
+    void addKillCount()
+    {
+        killCount++;
+    }
+
+    int getMonsterKillCount() const
+    {
+        return killCount;
+    }
 };
 
 class Monster : public Actor
 {
 private:
     MonsterData* data;
-    
+
 public:
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
