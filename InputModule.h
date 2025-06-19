@@ -10,14 +10,14 @@ public:
     void executeCommand();
 
     char getCommand() const;
-    
+
 };
 
 class InputModule
 {
 private:
     Command* currentCommand;
-    
+
 public:
     InputModule()
     {
@@ -28,7 +28,7 @@ public:
     {
         delete currentCommand;
     }
-    
+
     bool Execute();
 
     Command& getCurrentCommand() const;

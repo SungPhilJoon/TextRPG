@@ -5,9 +5,9 @@
 void PlayerData::InitializeData(DataManager& dataManager, Parser& parser)
 {
     parser.initialize("PlayerData.csv");
-        
-        
-        
+
+
+
     int lineCount = parser.getLine();
     for (int i = 0; i < lineCount; ++i)
     {
@@ -27,7 +27,7 @@ void PlayerData::InitializeData(DataManager& dataManager, Parser& parser)
 void MonsterData::InitializeData(DataManager& dataManager, Parser& parser)
 {
     parser.initialize("MonsterData.csv");
-        
+
     int lineCount = parser.getLine();
     for (int i = 0; i < lineCount; ++i)
     {
@@ -47,7 +47,7 @@ void MonsterData::InitializeData(DataManager& dataManager, Parser& parser)
 void ItemData::InitializeData(DataManager& dataManager, Parser& parser)
 {
     parser.initialize("ItemData.csv");
-        
+
     int lineCount = parser.getLine();
     for (int i = 0; i < lineCount; ++i)
     {

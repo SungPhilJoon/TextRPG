@@ -23,7 +23,7 @@ bool EnumeratorSequencer::ExecuteSequence(Command& command)
     return true;
 }
 
-Contents::Contents() : sequencer(new EnumeratorSequencer()) { }
+Contents::Contents() : sequencer(new EnumeratorSequencer()) {}
 
 Contents::~Contents()
 {

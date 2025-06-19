@@ -17,7 +17,7 @@ public:
     {
         this->index = index;
     }
-    
+
     int getIndex() const
     {
         return index;
@@ -31,7 +31,7 @@ private:
     int damage;
     int defense;
     int level;
-    
+
 public:
     int getHP() const
     {
@@ -61,7 +61,7 @@ private:
     int defense;
     int level;
     std::string name;
-    
+
 public:
     int getHP() const
     {
