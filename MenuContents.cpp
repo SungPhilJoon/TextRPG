@@ -6,8 +6,8 @@
 
 void MenuContents::InitContents()
 {
-    *sequencer << this->IsNickNameNotEmpty;
-    *sequencer << this->CanChangeContents;
+    *sequencer << [this](Command& cmd) { return this->IsNickNameNotEmpty(cmd); };
+    *sequencer << [this](Command& cmd) { return this->CanChangeContents(cmd); };
 }
 
 void MenuContents::EnterContents()
@@ -15,6 +15,7 @@ void MenuContents::EnterContents()
     std::cout << "Game Menu" << std::endl;
     std::cout << "1. Go Combat" << std::endl;
     std::cout << "2. Go Shop" << std::endl;
+	std::cout << "q. Quit Game" << std::endl;
     std::cout << "Enter your choice:" << std::endl;
 }
 
