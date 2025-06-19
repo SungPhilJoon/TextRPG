@@ -5,8 +5,10 @@
 #include "Contents.h"
 #include "Actor.h"
 
+template<>
 GameManager* Manager<GameManager>::instance = nullptr;
 
+template<>
 GameManager* Manager<GameManager>::Instance()
 {
     if (instance == nullptr)
@@ -52,7 +54,7 @@ void GameManager::EnterGame()
     while (IsNickNameEmpty())
     {
         std::string name;
-        
+
         std::cout << "Please enter your nickname" << std::endl;
         std::getline(std::cin, name); // std::cin >> name;
 
@@ -73,8 +75,23 @@ void GameManager::EnterGame()
 
 bool GameManager::UpdateGame()
 {
+    if (currentContents == ContentsType::Combat)
+    {
+        Command dummyCommand;
+        bool keepGoing = contentsMap[currentContents]->UpdateContents(dummyCommand);
+
+        if (!keepGoing)
+        {
+            contentsMap[currentContents]->ExitContents();
+            Command returnMenuCommand;
+            returnMenuCommand.setCommand('0');
+            ChangeContents(returnMenuCommand);
+        }
+        return true;
+    }
+
     Command currentCommand;
-    if  (inputModule->Execute())
+    if (inputModule->Execute())
     {
         currentCommand = inputModule->getCurrentCommand();
     }
@@ -86,14 +103,11 @@ bool GameManager::UpdateGame()
     if (currentCommand.getCommand() == 'q')
     {
         ExitGame();
-        
+
         return false;
     }
 
-    if (contentsMap[currentContents]->UpdateContents(currentCommand) == false)
-    {
-        return true;
-    }
+    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
 
     ChangeContents(currentCommand);
 
@@ -102,7 +116,7 @@ bool GameManager::UpdateGame()
 
 void GameManager::ExitGame()
 {
-    exit(0);   
+    exit(0);
 }
 
 bool GameManager::IsNickNameEmpty()
@@ -116,7 +130,7 @@ void GameManager::ChangeContents(Command& command)
     commandContext += command.getCommand();
 
     contentsMap[currentContents]->ExitContents();
-    
+
     int commandNum = std::stoi(commandContext);
     currentContents = static_cast<ContentsType>(commandNum);
 
