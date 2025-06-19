@@ -19,6 +19,11 @@ void CombatContents::EnterContents()
 {
     bIsBoss = false;
 
+    if (monster == nullptr)
+    {
+        monster = new Monster();
+    }
+
     int monsterID = 10001 + rand() % 10;
     MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
     monster->setData(data);

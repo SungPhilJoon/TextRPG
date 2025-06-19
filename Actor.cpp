@@ -57,8 +57,10 @@ void Monster::attack(Actor& target)
 
 void Monster::damaged(const Actor& attacker)
 {
-    int damage = attacker.GetDamage() - this->GetDefense();
+    int damage = attacker.GetDamage();
+        //- this->GetDefense();
     this->DecreaseHP(damage);
+
 }
 
 void Monster::setData(MonsterData* data)
