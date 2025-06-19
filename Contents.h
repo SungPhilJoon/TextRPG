@@ -6,6 +6,7 @@
 
 class Command;
 class Monster;
+class Player;
 
 enum class ContentsType
 {
@@ -30,11 +31,11 @@ class Contents
 {
 protected:
     EnumeratorSequencer* sequencer;
-    
+
 public:
     Contents();
     ~Contents();
-    
+
     virtual void InitContents() = 0;
     virtual void EnterContents() = 0;
     bool UpdateContents(Command& command);
@@ -56,11 +57,19 @@ class CombatContents : public Contents
 {
 private:
     Monster* monster;
-    
+    Player* player;
+
+    bool bIsBoss = false;
+
 public:
     virtual void InitContents() override;
     virtual void EnterContents() override;
     virtual void ExitContents() override;
+
+    bool HandlePlayerCommand(Command& command);
+private:
+    bool MonsterAttack();
+    bool IsDead();
 };
 
 class ShopContents : public Contents
