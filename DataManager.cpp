@@ -21,6 +21,12 @@ void DataContainer<PlayerData>::addData(PlayerData* data)
 }
 
 template<>
+std::vector<ItemData*> DataContainer<ItemData>::getDataContainer()
+{
+    return dataContainer;
+}
+
+template<>
 PlayerData* DataContainer<PlayerData>::getData(int id)
 {
     if (dataIndexById.find(id) == dataIndexById.end())

@@ -1,12 +1,13 @@
 #include "Contents.h"
 #include <iostream>
 #include "Actor.h"
+#include <iomanip>
 #include "DataManager.h"
 #include "Manager.h"
 #include "InputModule.h"
 #include "GameManager.h"
 #include "GameData.h"
-
+#include "Item.h"
 
 
 
@@ -14,10 +15,8 @@ void ShopContents::InitContents()
 {
     
     *sequencer << [this](Command& command) { return this->PlayerCommandHandle(command); };
-   
-    
-    
 
+   
 }
 
 void ShopContents::EnterContents()
@@ -72,19 +71,38 @@ bool ShopContents::SelectContents(Command& command)
    
     if (currentState == ShopState::Menu)
     {
-       
+        shopItems = Manager<DataManager>::Instance()->itemData.getDataContainer();
       
         switch (command.getCommand())
         {
             case '1':
                 currentState = ShopState::Buying;
-                //showbuyitems(); //판매리스트 
-                std::cout << "List Here" << std::endl;   // 향후에 지움
+                
+                std::cout << std::left << std::setw(20) << "Item"
+                    << std::right << std::setw(10) << "Price" << std::endl;
+                std::cout << std::string(40, '-') << std::endl;
+
+                for (auto item : shopItems)
+                {
+                    std::cout << std::left << std::setw(20) << item->getName()
+                        << std::right << std::setw(10) << item->getValue()
+                        << std::right << std::setw(10) << "Gold" << std::endl;
+                }
+                std::cout << "Button 0 : Attack Booster" << std::endl << "Button 1 : HPPostion" << std::endl;
                 break;
             case '2':
                 currentState = ShopState::Selling;
-               // ShowSellItems(); //구매 리스트 나열
-                std::cout << "List Here" << std::endl; // 향후에 지움
+				std::cout << "Your Inventory:" << std::endl;
+				//player->addItem(*ItemFactory::CreateItem(shopItems[0])); // 아이템 기능 구현되면 첫 번째 아이템을 테스트로 추가 해보고 이걸로 구매 기능 구현 가능할것 같음.
+          
+				std::cout << player->getInventory().size() << " items in inventory." << std::endl;
+				for (auto item : player->getInventory())
+				{
+					std::cout << std::left << std::setw(20) << item->getName()
+						<< std::right << std::setw(10) << item->getCount()
+					<< std::right << std::setw(10) << "Gold" << std::endl;
+				}
+                
                 break;
             case 'e': //상점 나가기
                 std::cout << "Exiting shop" << std::endl;
@@ -107,7 +125,7 @@ bool ShopContents::HandleBuySelect(Command& command)
     if (currentState == ShopState::Buying)
     {
       
-        int idx = command.getCommand() - '0' - 1;
+        int idx = command.getCommand() - '0';
         if (idx >= 0 && shopItems.size() > idx)
         {
       
@@ -115,7 +133,7 @@ bool ShopContents::HandleBuySelect(Command& command)
             {
                /* ItemData* data = Manager<DataManager>::Instance()->itemData.getData(idx);
                 player->addItem(*(ItemFactory::CreateItem(data)));*/ 
-                std::cout << "BuyItem!!!" << std::endl;
+                std::cout << "Buy " << shopItems[idx]->getName()<< "!!!" << std::endl;
 
             }
             else

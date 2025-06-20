@@ -25,7 +25,8 @@ public:
     ~DataContainer();
     
     void addData(TData* data);
-    
+    std::vector<TData*> getDataContainer();
+
     TData* getData(int id);
 
 #define Test
