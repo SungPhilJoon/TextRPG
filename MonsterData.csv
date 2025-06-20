@@ -1,0 +1,11 @@
+index,hp,damage,defense,level,name
+10001,20,15,3,1,Gobline1
+10002,40,30,6,2,Gobline2
+10003,60,45,9,3,Gobline3
+10004,80,60,12,1,Gobline4
+10005,100,75,15,2,Gobline5
+10006,120,90,18,3,Gobline6
+10007,140,105,21,1,Gobline7
+10008,160,120,24,2,Gobline8
+10009,180,135,27,3,Gobline9
+10010,200,150,30,100,GoblineKing
