@@ -174,8 +174,6 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="Contents.h" />
     <ClInclude Include="Manager.h" />
-    <ClInclude Include="MenuContents.h" />
-    <ClInclude Include="ShopContents.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameData.h" />
