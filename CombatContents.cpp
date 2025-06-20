@@ -23,12 +23,11 @@ void CombatContents::EnterContents()
     {
         monster = new Monster();
     }
+    player = Manager<GameManager>::Instance()->getPlayer();
 
     int monsterID = 10001 + rand() % 10;
     MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
-    monster->setData(data);
-
-    player = Manager<GameManager>::Instance()->getPlayer();
+    monster->setData(data, player->GetLevel()); // 250620 플레이어 레벨 기준으로 능력치 생성위해 수정
 
     std::cout << "Combat" << std::endl;
 
@@ -115,7 +114,8 @@ bool CombatContents::IsDead()
     if (monster->GetHP() <= 0) {
         std::cout << "You defeated " << monster->getName() << "! Congratulations\n";
 
-        // 경험치 얻기 + 레벨링
+        // 250620 경험치 획득
+        player->GainExp(50);
         // 골드 얻기 10 ~ 20
         int goldEarned = rand() % 11 + 10;
         player->addGold(goldEarned);

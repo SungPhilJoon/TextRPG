@@ -30,8 +30,18 @@ void Player::useItem(Item& item)
 
 void Player::levelUp()
 {
+    // 250620 능력치 성장 확인을 위한 이전값 저장
+    int prevHP = baseHP;
+    int prevDamage = baseDamage;
+    int prevDefense = baseDefense;
+
     increaseLevel();
     setData(Manager<DataManager>::Instance()->playerData.getData(level));
+
+    std::cout << "NOW STATUS\n";
+    std::cout << "- HP: " << prevHP << " -> " << baseHP << "\n";
+    std::cout << "- ATK: " << prevDamage << " -> " << baseDamage << "\n";
+    std::cout << "- DEF: " << prevDefense << " -> " << baseDefense << "\n";
 }
 
 bool Player::IsNicknameEmpty()
@@ -95,6 +105,24 @@ void Player::setData(PlayerData* data)
     incDefense = prevIncDefense;
 }
 
+// 250620 경험치 및 레벨링
+void Player::GainExp(int amount)
+{
+    exp += amount;
+    std::cout << "\n[EXP] +" << amount << " (Current EXP: " << exp << "/100)\n";
+    TryLevelUp();
+}
+// 250620 경험치 요구량 및 레벨 10 제한
+void Player::TryLevelUp()
+{
+    while (exp >= 100 && level < 10)
+    {
+        exp -= 100;
+        levelUp();
+        std::cout << "[LEVEL UP] NOW " << level << " Level !!\n\n";
+    }
+}
+
 void Monster::attack(Actor& target)
 {
     target.damaged(*this);
@@ -108,28 +136,27 @@ void Monster::damaged(const Actor& attacker)
 
 }
 
-void Monster::setData(MonsterData* data)
+// 250620 setData 함수에서 playerLevel도 넘기도록 해서 그걸 기반으로 몬스터 스탯 랜덤 생성 수정
+void Monster::setData(MonsterData* data, int playerLevel)
 {
     this->data = data;
-
-    level = data->getLevel();
+    level = playerLevel;
     
     //baseHP = data->getHP();
-    baseHP = rand() % (level * 11) + (level * 20);
+    baseHP = rand() % (playerLevel * 11) + (playerLevel * 20);
     //baseDamage = data->getDamage();
-    baseDamage = rand() % (level * 6) + (level * 5);
+    baseDamage = rand() % (playerLevel * 6) + (playerLevel * 5);
 
     baseDefense = data->getDefense();
-
     name = data->getName();
-
     currentHP = baseHP;
-
     incDamage = 0;
     incDefense = 0;
 }
 
 const std::string Monster::getName() const
 {
-    return data->getName();
+    // 250620 10레벨 때 만나는 몬스터의 이름에 접두사에 boss를 붙이기 위해 수정
+    // 이름을 data로부터 가져오지 않고, 실제 멤버 변수 name 참조
+    return name;
 }

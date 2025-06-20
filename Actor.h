@@ -116,6 +116,11 @@ public:
     void levelUp();
     bool IsNicknameEmpty();
 
+    // 250620 경험치
+    void GainExp(int amount);
+    void TryLevelUp();
+    int GetExp() const { return exp; }
+
     // ---- items ----//
     const std::vector<Item*>& getInventory() const;
     bool reduceItem(int idx ,int amount=1);
@@ -129,7 +134,6 @@ public:
     virtual void damaged(const Actor& attacker) override;
 
     virtual void useItem(Item&) override;
-    // 경험치 얻는 로직 구현
 
     void addKillCount()
     {
@@ -151,7 +155,8 @@ public:
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
 
-    void setData(MonsterData* data);
+    // 250620 플레이어 레벨 기반 능력치 설정용으로 수정, playerLevel을 넘기기위해 추가
+    void setData(MonsterData* data, int playerLevel);
 
     const std::string getName() const;
 };
