@@ -90,8 +90,11 @@ bool CombatContents::HandlePlayerCommand(Command& command)
         return false;
     }
 
-    // 포션 사용 처리
-    // if (rand() % 100 < 30) { ... }
+        // 250622 포션 사용 처리
+    if (!player->getInventory().empty())
+    {
+        player->useItemDuringCombat();
+    }
 
     return true;
 }
@@ -108,6 +111,10 @@ bool CombatContents::IsDead()
 {
     if (player->GetHP() <= 0) {
         std::cout << "You died. Game Over.\n";
+
+        //플레이어 사망 시 체력 회복
+        player->IncreaseHP(player->GetBaseHP());
+
         return true;
     }
 
@@ -130,7 +137,7 @@ bool CombatContents::IsDead()
         //}
 
         player->addKillCount();
-        player->IncreaseHP(1100);
+        //player->IncreaseHP(1100); 250622 매 전투 종료시 체력 회복 부분 비활성화
 
         return true;
     }

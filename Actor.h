@@ -44,6 +44,11 @@ public:
         return currentHP;
     }
 
+    int GetBaseHP() const // 기본 체력(baseHP) 반환, 회복/아이템 사용 조건 등에서 기준값으로 사용됨
+    {
+        return baseHP;
+    }
+
     int GetDamage() const
     {
         return baseDamage * level + incDamage;
@@ -124,7 +129,9 @@ public:
     // ---- items ----//
     const std::vector<Item*>& getInventory() const;
     bool reduceItem(int idx ,int amount=1);
-    void addItem(const Item& item);
+    void addItem(const Item& item); 
+    void useItemDuringCombat(); // 250622 전투 중 자동 아이템 사용 함수
+
     // --- currency ---///
     int getGold()const; 
     void addGold(int amount =1);

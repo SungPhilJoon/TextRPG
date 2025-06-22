@@ -27,6 +27,41 @@ void Player::useItem(Item& item)
     item.useItem(*this);
 }
 
+void Player::useItemDuringCombat()
+{
+    const auto& inventory = getInventory();
+
+    std::cout << "[디버깅] 현재 HP: " << GetHP() << ", 최대 HP: " << GetBaseHP() << std::endl;
+
+    // 체력이 최대체력보다 50 이상 줄었을 때 포션 사용
+    if (GetHP() <= GetBaseHP() - 50)
+    {
+        for (Item* item : inventory)
+        {
+            if (item->getType() == ItemType::Potion)
+            {
+                item->useItem(*this);
+                std::cout << "[Item Use] Potion.\n";
+                std::cout << "[Player HP]: " << GetHP() << " / " << GetBaseHP() << "\n";
+                return;
+            }
+        }
+    }
+    else
+    {
+        for (Item* item : inventory)
+        {
+            if (item->getType() == ItemType::UpgradeDamage)
+            {
+                std::cout << "[Item Use] Damage Buff.\n";
+                std::cout << "[Player ATK]: " << GetDamage() << " + 10\n";
+                item->useItem(*this);
+                return;
+            }
+        }
+    }
+}
+
 
 void Player::levelUp()
 {
@@ -119,7 +154,10 @@ void Player::TryLevelUp()
     {
         exp -= 100;
         levelUp();
+
         std::cout << "[LEVEL UP] NOW " << level << " Level !!\n\n";
+
+        IncreaseHP(baseHP); // 250622 레벨업 시 체력 회복
     }
 }
 
