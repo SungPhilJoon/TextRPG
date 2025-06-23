@@ -73,6 +73,12 @@ bool CombatContents::HandlePlayerCommand(Command& command)
         bMonsterIntroduced = true;
     }
 
+    // 250622 포션 사용 처리 (인벤토리가 비어있지 않을때 30% 확률로 아이템 랜덤 사용)
+    if (!player->getInventory().empty() && rand() % 100 < 30)
+    {
+        player->useItemDuringCombat();
+    }
+
     player->attack(*monster);
     std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
 
@@ -88,13 +94,7 @@ bool CombatContents::HandlePlayerCommand(Command& command)
     {
         bMonsterIntroduced = false;
         return false;
-    }
-
-        // 250622 포션 사용 처리
-    if (!player->getInventory().empty())
-    {
-        player->useItemDuringCombat();
-    }
+    } 
 
     return true;
 }

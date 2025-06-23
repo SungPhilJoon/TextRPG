@@ -31,8 +31,6 @@ void Player::useItemDuringCombat()
 {
     const auto& inventory = getInventory();
 
-    std::cout << "[디버깅] 현재 HP: " << GetHP() << ", 최대 HP: " << GetBaseHP() << std::endl;
-
     // 체력이 최대체력보다 50 이상 줄었을 때 포션 사용
     if (GetHP() <= GetBaseHP() - 50)
     {
