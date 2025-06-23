@@ -57,9 +57,8 @@ public:
 class CombatContents : public Contents
 {
 private:
-    Monster* monster;
-    Player* player;
-
+    Monster* monster = nullptr;
+    Player* player = nullptr;
     bool bIsBoss = false;
 
 public:
@@ -69,12 +68,16 @@ public:
 
     bool HandlePlayerCommand(Command& command);
 private:
-    bool MonsterAttack();
-    bool IsDead();
+    void PlayerAttack();
+    void MonsterAttackBack();
+    bool IsActorDead();
+    void SetupBossMonster();
+    void GameClear();   
+    void GetStageClearReward();
 };
 enum class ShopState
 {
- 
+
     Menu,
     Buying,
     Selling

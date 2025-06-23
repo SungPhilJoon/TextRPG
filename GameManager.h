@@ -32,5 +32,5 @@ public:
     virtual void ExitGame() override;
 
     bool IsNickNameEmpty();
-    void ChangeContents(Command& command);
+    void ChangeContents(Command& command, bool callEnter, bool callUpdate);
 };

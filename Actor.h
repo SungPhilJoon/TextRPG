@@ -157,6 +157,7 @@ class Monster : public Actor
 {
 private:
     MonsterData* data;
+    bool bIsBoss = false;
 
 public:
     virtual void attack(Actor& target) override;
@@ -166,4 +167,7 @@ public:
     void setData(MonsterData* data, int playerLevel);
 
     const std::string getName() const;
+
+    void SetIsBoss(bool b) { bIsBoss = b;  }
+    bool IsBoss() const { return bIsBoss;  }
 };

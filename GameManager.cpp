@@ -71,26 +71,13 @@ void GameManager::EnterGame()
     player->setData(playerData);
 
     contentsMap[currentContents]->EnterContents();
+
 }
 
 bool GameManager::UpdateGame()
 {
-    if (currentContents == ContentsType::Combat)
-    {
-        Command dummyCommand;
-        bool keepGoing = contentsMap[currentContents]->UpdateContents(dummyCommand);
-
-        if (!keepGoing)
-        {
-            contentsMap[currentContents]->ExitContents();
-            Command returnMenuCommand;
-            returnMenuCommand.setCommand('0');
-            ChangeContents(returnMenuCommand);
-        }
-        return true;
-    }
-
     Command currentCommand;
+
     if (inputModule->Execute())
     {
         currentCommand = inputModule->getCurrentCommand();
@@ -103,29 +90,41 @@ bool GameManager::UpdateGame()
     if (currentCommand.getCommand() == 'q')
     {
         ExitGame();
-
         return false;
     }
-    if (currentContents == ContentsType::Shop) // 상점일때는 false일때 menu로 이동 
-    {
 
-        bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
-    
-        if (!keepGoing)
-        {
-            contentsMap[currentContents]->ExitContents();
-            Command returnMenuCommand;
-            returnMenuCommand.setCommand('0');
-            ChangeContents(returnMenuCommand);
-        }
+    if (currentContents == ContentsType::Menu)
+    {
+        ChangeContents(currentCommand, true, true);
         return true;
-    
     }
+
     bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
 
-    ChangeContents(currentCommand);
+    if (!keepGoing)
+    {
+        Command returnMenuCommand;
+        returnMenuCommand.setCommand('0');
+        ChangeContents(returnMenuCommand, true, false);
+    }
 
     return true;
+
+    //if (currentContents == ContentsType::Shop) // 상점일때는 false일때 menu로 이동 
+    //{
+
+    //    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
+    //
+    //    if (!keepGoing)
+    //    {
+    //        contentsMap[currentContents]->ExitContents();
+    //        Command returnMenuCommand;
+    //        returnMenuCommand.setCommand('0');
+    //        ChangeContents(returnMenuCommand);
+    //    }
+    //    return true;
+    //}
+
 }
 
 void GameManager::ExitGame()
@@ -138,15 +137,26 @@ bool GameManager::IsNickNameEmpty()
     return player->IsNicknameEmpty();
 }
 
-void GameManager::ChangeContents(Command& command)
+void GameManager::ChangeContents(Command& command, bool callEnter, bool callUpdate)
 {
-    std::string commandContext = "";
-    commandContext += command.getCommand();
+    contentsMap[currentContents]->ExitContents(); // 전투 ExitContents 불려짐
 
-    contentsMap[currentContents]->ExitContents();
-
-    int commandNum = std::stoi(commandContext);
+    int commandNum = command.getCommand() - '0'; // command는 전투가 종료되었으므로, menu의 command가 불려짐 
     currentContents = static_cast<ContentsType>(commandNum);
 
-    contentsMap[currentContents]->EnterContents();
+    /*std::string commandContext = "";
+    commandContext += command.getCommand();
+
+    int commandNum = std::stoi(commandContext);
+    currentContents = static_cast<ContentsType>(commandNum);*/
+
+    if (callEnter)
+    {
+        contentsMap[currentContents]->EnterContents();
+    }
+
+    if (callUpdate)
+    {
+        contentsMap[currentContents]->UpdateContents(command);
+    }
 }

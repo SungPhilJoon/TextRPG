@@ -136,6 +136,11 @@ void Player::setData(PlayerData* data)
 
     incDamage = prevIncDamage;
     incDefense = prevIncDefense;
+
+    std::cout << "\n\nHello! " << name << "\n";
+	std::cout << "HP: " << baseHP << "\n";
+	std::cout << "ATK: " << baseDamage << "\n";
+	std::cout << "Level: " << level << "\n\n";
 }
 
 // 250620 경험치 및 레벨링
@@ -155,7 +160,7 @@ void Player::TryLevelUp()
 
         std::cout << "[LEVEL UP] NOW " << level << " Level !!\n\n";
 
-        IncreaseHP(baseHP); // 250622 레벨업 시 체력 회복
+        IncreaseHP(baseHP);
     }
 }
 
@@ -177,11 +182,16 @@ void Monster::setData(MonsterData* data, int playerLevel)
 {
     this->data = data;
     level = playerLevel;
-    
-    //baseHP = data->getHP();
+
     baseHP = rand() % (playerLevel * 11) + (playerLevel * 20);
-    //baseDamage = data->getDamage();
     baseDamage = rand() % (playerLevel * 6) + (playerLevel * 5);
+
+    if (level >= 10)
+    {
+        float multiplier = 1.5f + rand() % 51 / 100.0f;  // 1.5 ~ 2.0
+        baseHP = static_cast<int>(baseHP * multiplier);
+        baseDamage = static_cast<int>(baseDamage * multiplier);
+    }
 
     baseDefense = data->getDefense();
     name = data->getName();
