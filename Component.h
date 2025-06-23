@@ -41,7 +41,7 @@ private:
 
 public:
     ~InventoryComponent();
-    const std::vector<Item*> getInventory();
+    const std::vector<Item*>& getInventory() const;
     void initialize() override;
     void destroy() override;
     void addItem(const Item& item);

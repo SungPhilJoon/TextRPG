@@ -72,7 +72,7 @@ bool ShopContents::SelectContents(Command& command)
     if (currentState == ShopState::Menu)
     {
         shopItems = Manager<DataManager>::Instance()->itemData.getDataContainer();
-      
+		int itemIndex = 0;
         switch (command.getCommand())
         {
             case '1':
@@ -96,14 +96,25 @@ bool ShopContents::SelectContents(Command& command)
 				//player->addItem(*ItemFactory::CreateItem(shopItems[0])); // 아이템 기능 구현되면 첫 번째 아이템을 테스트로 추가 해보고 이걸로 구매 기능 구현 가능할것 같음.
           
 				std::cout << player->getInventory().size() << " items in inventory." << std::endl;
-				for (auto item : player->getInventory())
-				{
-					std::cout << std::left << std::setw(20) << item->getName()
-						<< std::right << std::setw(10) << item->getCount()
-					<< std::right << std::setw(10) << "Gold" << std::endl;
-				}
                 
+                for (auto item : player->getInventory())
+                {
+                    std::cout << "[" << itemIndex << "] "
+                        << std::setw(10) << std::left << item->getName()
+                        << " | Count: " << std::setw(3) << item->getCount()
+                        << " | Price: " << item->getValue() << "Gold" << std::endl;
+                    ++itemIndex;
+                }
+				if (player->getInventory().empty())
+				{
+					std::cout << "Your inventory is empty." << std::endl;
+				}
+                else
+                {
+                    std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl;
+                }
                 break;
+
             case 'e': //상점 나가기
                 std::cout << "Exiting shop" << std::endl;
                 return false;  // 상점 종료 신호
@@ -131,8 +142,8 @@ bool ShopContents::HandleBuySelect(Command& command)
       
             if (player->reduceGold(shopItems[idx]->getValue())) // 구매 했다면?
             {
-               /* ItemData* data = Manager<DataManager>::Instance()->itemData.getData(idx);
-                player->addItem(*(ItemFactory::CreateItem(data)));*/ 
+                ItemData* data = Manager<DataManager>::Instance()->itemData.getData(idx);
+                player->addItem(*(ItemFactory::CreateItem(data))); 
                 std::cout << "Buy " << shopItems[idx]->getName()<< "!!!" << std::endl;
 
             }
@@ -161,7 +172,7 @@ bool ShopContents::HandleSellSelect(Command& command)
 {
     if (currentState == ShopState::Selling)
     {
-        int idx = command.getCommand() - '0' - 1;
+        int idx = command.getCommand() - '0';
         if (idx >= 0 && player->getInventory().size() > idx)
         {
             int addGold = player->getInventory()[idx]->getValue();

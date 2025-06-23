@@ -52,9 +52,9 @@ Item* ItemFactory::CreateItem(ItemData* data)
     switch (num)
     {
     case 1:
-        return new UpgradeDamageItem();
+        return new UpgradeDamageItem(data);
     case 2:
-        return new PotionItem();
+        return new PotionItem(data);
 
     default:
         return nullptr;

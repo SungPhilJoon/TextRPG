@@ -64,17 +64,25 @@ void DataContainer<ItemData>::addData(ItemData* data)
     this->dataContainer.push_back(data);
 }
 
+//template<>
+//ItemData* DataContainer<ItemData>::getData(int id)
+//{
+//    if (dataIndexById.find(id) == dataIndexById.end())
+//    {
+//        return nullptr;
+//    }
+//
+//    return dataContainer[dataIndexById[id]];
+//}
 template<>
 ItemData* DataContainer<ItemData>::getData(int id)
 {
-    if (dataIndexById.find(id) == dataIndexById.end())
+    if (dataContainer.size() <= id || id < 0)
     {
         return nullptr;
     }
-
-    return dataContainer[dataIndexById[id]];
+    return dataContainer[id];
 }
-
 DataInitializer::DataInitializer()
 {
     parser = new CSVParser();

@@ -45,7 +45,7 @@ class UpgradeDamageItem : public Item
 {
 public:
     UpgradeDamageItem() { type = ItemType::UpgradeDamage; count = 1; }
-
+    UpgradeDamageItem(ItemData* itemData) { type = ItemType::UpgradeDamage; count = 1; data = itemData; }
     virtual void useItem(ItemUseable&) override;
     virtual Item* clone() const override { return new UpgradeDamageItem(*this);}
 };
@@ -54,7 +54,8 @@ class PotionItem : public Item
 {
 public:
     PotionItem() { type = ItemType::Potion; count = 1;}
-
+    PotionItem(ItemData* itemData) { type = ItemType::Potion; count = 1; data = itemData;
+    }
     virtual void useItem(ItemUseable&) override;
     virtual Item* clone() const override{ return new PotionItem(*this);}
 };

@@ -56,9 +56,17 @@ InventoryComponent::~InventoryComponent()
     destroy();
 }
 
-const std::vector<Item*> InventoryComponent::getInventory()
+const std::vector<Item*>& InventoryComponent::getInventory() const
 {
-    return std::vector<Item*>();
+	if (items.size() > 0)
+	{
+		return items;
+	}
+    else
+    {
+        return std::vector<Item*>();
+    }
+    //return std::vector<Item*>();
 }
 
 void InventoryComponent::initialize()
