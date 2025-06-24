@@ -48,7 +48,6 @@ bool ShopContents::PlayerCommandHandle(Command& command)
 }
 
 
-
 void ShopContents::ShowContents()
 {
     
@@ -61,10 +60,6 @@ void ShopContents::ShowContents()
     std::cout <<"Current Gold : "<<player->getGold()<<std::endl;
 }
 
-
-
-
-
 bool ShopContents::SelectContents(Command& command)
 {
   
@@ -72,47 +67,15 @@ bool ShopContents::SelectContents(Command& command)
     if (currentState == ShopState::Menu)
     {
         shopItems = Manager<DataManager>::Instance()->itemData.getDataContainer();
-		int itemIndex = 0;
         switch (command.getCommand())
         {
             case '1':
                 currentState = ShopState::Buying;
-                
-                std::cout << std::left << std::setw(20) << "Item"
-                    << std::right << std::setw(10) << "Price" << std::endl;
-                std::cout << std::string(40, '-') << std::endl;
-
-                for (auto item : shopItems)
-                {
-                    std::cout << std::left << std::setw(20) << item->getName()
-                        << std::right << std::setw(10) << item->getValue()
-                        << std::right << std::setw(10) << "Gold" << std::endl;
-                }
-                std::cout << "Button 0 : Attack Booster" << std::endl << "Button 1 : HPPostion" << std::endl;
+				ShowShopItems();
                 break;
             case '2':
                 currentState = ShopState::Selling;
-				std::cout << "Your Inventory:" << std::endl;
-				
-          
-				std::cout << player->getInventory().size() << " items in inventory." << std::endl;
-                
-                for (auto item : player->getInventory())
-                {
-                    std::cout << "[" << itemIndex << "] "
-                        << std::setw(10) << std::left << item->getName()
-                        << " | Count: " << std::setw(3) << item->getCount()
-                        << " | Price: " << item->getValue() << "Gold" << std::endl;
-                    ++itemIndex;
-                }
-				if (player->getInventory().empty())
-				{
-					std::cout << "Your inventory is empty." << std::endl;
-				}
-                else
-                {
-                    std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl;
-                }
+				ShowPlayerInventoryToSell();
                 break;
 
             case 'e': //���� ������
@@ -149,7 +112,7 @@ bool ShopContents::HandleBuySelect(Command& command)
             else
             {
                 std::cout << "Not Enough Money" << std::endl;
-               
+
             }
         }
         else
@@ -165,6 +128,7 @@ bool ShopContents::HandleBuySelect(Command& command)
     }
     return true;
 }
+
 
 
 bool ShopContents::HandleSellSelect(Command& command)
@@ -191,3 +155,37 @@ bool ShopContents::HandleSellSelect(Command& command)
 }   
 
 
+
+
+void ShopContents::ShowShopItems()
+{
+    using namespace std;
+    cout << left << setw(20) << "Item" << right << setw(10) << "Price" << endl << string(40, '-') << endl;
+
+    for (auto item : shopItems)
+    {
+        cout << left << setw(20) << item->getName() << right << setw(10) << item->getValue() << right << setw(10) << "Gold" << endl <<endl ;
+    }
+    cout << "Button 0 : Buy Attack Booster" << endl << "Button 1 : Buy HPPostion" << endl;
+}
+
+void ShopContents::ShowPlayerInventoryToSell()
+{
+    using namespace std;
+    int itemIndex = 0;
+    cout << "Your Inventory:" << endl;
+    cout << player->getInventory().size() << " items in inventory." << endl;
+    for (auto item : player->getInventory())
+    {
+        cout << "[" << itemIndex << "] " << setw(15) << left << item->getName() << " | Count: " << setw(3) << item->getCount() << " | Price: " << item->getValue() << "Gold" << endl;
+        ++itemIndex;
+    }
+    if (player->getInventory().empty())
+    {
+        std::cout << "Your inventory is empty." << std::endl;
+    }
+    else
+    {
+        std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl;
+    }
+}

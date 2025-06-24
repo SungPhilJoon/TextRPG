@@ -101,7 +101,8 @@ public:
     virtual void EnterContents() override;
     virtual void ExitContents() override;
     void ShowContents();
-
+    void ShowShopItems();
+	void ShowPlayerInventoryToSell();
   // === 아이템 구매 판매 command ====
  
     bool PlayerCommandHandle(Command& command);
