@@ -74,6 +74,7 @@ void GameManager::EnterGame()
 
 }
 
+
 bool GameManager::UpdateGame()
 {
     Command currentCommand;
@@ -95,7 +96,14 @@ bool GameManager::UpdateGame()
 
     if (currentContents == ContentsType::Menu)
     {
-        ChangeContents(currentCommand, true, true);
+        if (currentCommand.getCommand() == '1')
+        {
+            ChangeContents(currentCommand, true, true);
+        }
+        else
+        {
+            ChangeContents(currentCommand, true, false);
+        }
         return true;
     }
 
@@ -109,21 +117,6 @@ bool GameManager::UpdateGame()
     }
 
     return true;
-
-    //if (currentContents == ContentsType::Shop) // 상점일때는 false일때 menu로 이동 
-    //{
-
-    //    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
-    //
-    //    if (!keepGoing)
-    //    {
-    //        contentsMap[currentContents]->ExitContents();
-    //        Command returnMenuCommand;
-    //        returnMenuCommand.setCommand('0');
-    //        ChangeContents(returnMenuCommand);
-    //    }
-    //    return true;
-    //}
 
 }
 

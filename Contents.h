@@ -75,20 +75,18 @@ private:
     void GameClear();   
     void GetStageClearReward();
 };
-enum class ShopState
-{
 
-    Menu,
-    Buying,
-    Selling
-};
 class ShopContents : public Contents
 {
 private:
     std::vector<ItemData*> shopItems;
-    ShopState currentState = ShopState::Menu;
     Player* player;
+    std::function<bool(Command&)>currentHandler;
 
+    //current handler를 binding 시킨다 
+    void BindSelectHandler();
+    void BindBuyHandler();
+    void BindSellHandler();
 
 public:
     /// <summary>
@@ -100,13 +98,13 @@ public:
     virtual void InitContents() override;
     virtual void EnterContents() override;
     virtual void ExitContents() override;
-    void ShowContents();
+
+
+    void ShowMenu();
     void ShowShopItems();
 	void ShowPlayerInventoryToSell();
   // === 아이템 구매 판매 command ====
- 
-    bool PlayerCommandHandle(Command& command);
-    bool SelectContents(Command& command);
+    bool HandleSelectContents(Command& command);
     bool HandleBuySelect(Command& command);
     bool HandleSellSelect(Command& command);
 

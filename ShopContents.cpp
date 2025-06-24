@@ -11,44 +11,45 @@
 #include "ItemFactory.h"
 
 
+
+
 void ShopContents::InitContents()
 {
-    
-    *sequencer << [this](Command& command) { return this->PlayerCommandHandle(command); };
-
    
+   
+    player = GameManager::Instance()->getPlayer();
+
+    *sequencer << [this](Command& command) { return currentHandler(command); };
+
 }
 
 void ShopContents::EnterContents()
 {
-    player = GameManager::Instance()->getPlayer();
-    currentState = ShopState::Menu;
-    ShowContents();
+    ShowMenu();
+    BindSelectHandler();
 }
 
 void ShopContents::ExitContents()
 {
-   
 
 }
-bool ShopContents::PlayerCommandHandle(Command& command)
+
+void ShopContents::BindSelectHandler()
 {
-    switch (currentState)
-    {
-   
-    case ShopState::Menu:
-        return SelectContents(command);
-    case ShopState::Buying:
-        return HandleBuySelect(command);
-    case ShopState::Selling:
-        return HandleSellSelect(command);
-    default:
-        return true;
-    }
+    currentHandler = std::bind(&ShopContents::HandleSelectContents, this, std::placeholders::_1);
 }
 
+void ShopContents::BindSellHandler()
+{
+    currentHandler = std::bind(&ShopContents::HandleSellSelect, this, std::placeholders::_1);
+}
 
-void ShopContents::ShowContents()
+void ShopContents::BindBuyHandler()
+{
+    currentHandler = std::bind(&ShopContents::HandleBuySelect, this, std::placeholders::_1);
+}
+
+void ShopContents::ShowMenu()
 {
     
     std::cout << "Shop Menu" << std::endl;
@@ -60,102 +61,81 @@ void ShopContents::ShowContents()
     std::cout <<"Current Gold : "<<player->getGold()<<std::endl;
 }
 
-bool ShopContents::SelectContents(Command& command)
+bool ShopContents::HandleSelectContents(Command& command)
 {
-  
-   
-    if (currentState == ShopState::Menu)
+    shopItems = Manager<DataManager>::Instance()->itemData.getDataContainer();
+    switch (command.getCommand())
     {
-        shopItems = Manager<DataManager>::Instance()->itemData.getDataContainer();
-        switch (command.getCommand())
-        {
-            case '1':
-                currentState = ShopState::Buying;
-				ShowShopItems();
-                break;
-            case '2':
-                currentState = ShopState::Selling;
-				ShowPlayerInventoryToSell();
-                break;
+    case '1':
+        BindBuyHandler();
+        ShowShopItems();
+        break;
+    case '2':
+        BindSellHandler();
+        ShowPlayerInventoryToSell();
+        break;
 
-            case 'e': //���� ������
-                std::cout << "Exiting shop" << std::endl;
-                return false;  // ���� ���� ��ȣ
-            case 'q': 
-                std::cout << "Quit Game" << std::endl;
-                return false;  // ���� ���� ��ȣ
-            default:
-                std::cout << "Invalid input, please reinput." << std::endl;
-                return true;
-        }
-
+    case 'e': //���� ������
+        std::cout << "Exiting shop" << std::endl;
+        return false;  // ���� ���� ��ȣ
+    case 'q':
+        std::cout << "Quit Game" << std::endl;
+        return false;  // ���� ���� ��ȣ
+    default:
+        std::cout << "Invalid input, please reinput." << std::endl;
+        return true;
     }
-    
     return true;
 }
 
 bool ShopContents::HandleBuySelect(Command& command)
 {
-    if (currentState == ShopState::Buying)
+    int idx = command.getCommand() - '0';
+    if (idx >= 0 && shopItems.size() > idx)
     {
-      
-        int idx = command.getCommand() - '0';
-        if (idx >= 0 && shopItems.size() > idx)
+
+        if (player->reduceGold(shopItems[idx]->getValue())) // ���� �ߴٸ�?
         {
-      
-            if (player->reduceGold(shopItems[idx]->getValue())) // ���� �ߴٸ�?
-            {
-                player->addItem(shopItems[idx]->getIndex()); 
-                std::cout << "Buy " << shopItems[idx]->getName()<< "!!!" << std::endl;
+            player->addItem(shopItems[idx]->getIndex());
+            std::cout << "Buy " << shopItems[idx]->getName() << "!!!" << std::endl;
 
-            }
-            else
-            {
-                std::cout << "Not Enough Money" << std::endl;
-
-            }
         }
         else
         {
-            std::cout << "error idx" << std::endl;
-           
+            std::cout << "Not Enough Money" << std::endl;
+
         }
-        currentState = ShopState::Menu;
-        ShowContents();
-       
-     
-  
     }
+    else
+    {
+        std::cout << "error idx" << std::endl;
+
+    }
+    BindSelectHandler();
+    ShowMenu();      
     return true;
 }
 
-
-
 bool ShopContents::HandleSellSelect(Command& command)
 {
-    if (currentState == ShopState::Selling)
+    int idx = command.getCommand() - '0';
+    if (idx >= 0 && player->getInventory().size() > idx)
     {
-        int idx = command.getCommand() - '0';
-        if (idx >= 0 && player->getInventory().size() > idx)
-        {
-            int addGold = player->getInventory()[idx]->getValue();
-            player->reduceItem(idx);
-            player->addGold(addGold);
-            std::cout << "SellItem" << std::endl;
-        }
-        else
-        {
-            std::cout << "error idx" << std::endl;
-           
-        }
-        currentState = ShopState::Menu;
-        ShowContents();
-    };
+        int addGold = player->getInventory()[idx]->getValue();
+        player->reduceItem(idx);
+        player->addGold(addGold);
+        std::cout << "SellItem" << std::endl;
+    }
+    else
+    {
+        std::cout << "error idx" << std::endl;
+
+    }
+    ShowMenu();
+    BindSelectHandler();
+    ShowMenu();
     return true;
 }   
-
-
-
 
 void ShopContents::ShowShopItems()
 {
