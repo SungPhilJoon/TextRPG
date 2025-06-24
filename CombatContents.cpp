@@ -3,36 +3,31 @@
 #include "Contents.h"
 #include "Actor.h"
 #include "DataManager.h"
+#include "GameData.h"
 #include "Manager.h"
 #include "InputModule.h"
 #include "GameManager.h"
 
-void CombatContents::InitContents()
+void CombatContents::InitContents(Player* player)
 {
-
-    monster = new Monster();
-
-    *sequencer << [this](Command& command) { return this->HandlePlayerCommand(command); };
+    *sequencer << [this, player](Command& command) { return this->HandlePlayerCommand(player, command); };
+    *sequencer << [this, player](Command& command) { return this->HandleMonster(player); };
+    *sequencer << [this, player](Command& command) { return this->HandleNextContents(player,command); };
 }
 
-void CombatContents::EnterContents()
+void CombatContents::EnterContents(Player* player)
 {
     if (monster == nullptr)
     {
         monster = new Monster();
     }
-    player = Manager<GameManager>::Instance()->getPlayer();
 
-    int monsterID = 10001 + rand() % 10;
-    MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
-    monster->setData(data, player->GetLevel()); // 250620 ÇÃ·¹ÀÌ¾î ·¹º§ ±âÁØÀ¸·Î ´É·ÂÄ¡ »ý¼ºÀ§ÇØ ¼öÁ¤
+    monster->setData(player->GetLevel()); // 250620 ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É·ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    std::cout << monster->getName() << " appeared! HP: " << monster->GetHP() << ", Damage: " << monster->GetDamage() << std::endl;
-
-    SetupBossMonster();
+    std::cout << monster->getName() << " enters the battlefield! [HP: " << monster->GetBaseHP() << ", DMG: " << monster->GetDamage() << "]\n";
 }
 
-void CombatContents::ExitContents()
+void CombatContents::ExitContents(Player* player)
 {
     if (monster)
     {
@@ -41,99 +36,117 @@ void CombatContents::ExitContents()
     }
 }
 
-bool CombatContents::HandlePlayerCommand(Command& command)
+bool CombatContents::HandlePlayerCommand(Player* player, Command& command)
 {
+    if (monster->IsDead())
+    {
+        return true;
+    }
+    
     char cmd = command.getCommand();
 
-    if (cmd == '1') // '1' ÀÔ·Â ½Ã ÀÚµ¿ ÀüÅõ
+    if (player->GetHP() <= player->GetBaseHP() - 50)
     {
-        while (true)
+        player->useItemDuringCombat();
+    }
+    
+    if (cmd == '1') // '1' ï¿½Ô·ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
+    {
+        player->attack(*monster);
+        std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
+        if (IsMonsterDead())
         {
-            if (!player->getInventory().empty() && rand() % 100 < 30)
+            std::cout << "You defeated " << monster->getName() << "! Congratulations\n";
+            if (IsLastStage(player->GetLevel()))
             {
-                player->useItemDuringCombat();
+                GameClear(player);
             }
-
-            PlayerAttack();
-
-            if (IsActorDead()) break;
-
-            MonsterAttackBack();
-
-            if (IsActorDead()) break;
+            else
+            {
+                GetStageClearReward(player);
+            }
         }
 
-        Command returnMenuCommand;
-        returnMenuCommand.setCommand('0');
-		GameManager::Instance()->ChangeContents(returnMenuCommand, true, false);
+        return true;
+    }
+    
+    return false;
+}
+
+bool CombatContents::HandleMonster(Player* player)
+{
+    if (monster->IsDead())
+    {
+        return true;
+    }
+    
+    monster->attack(*player);
+    if (IsPlayerDead(player))
+    {
+        //ExitContents(player);
+
+        //GameManager::Instance()->ExitGame();
+
+        std::cout << "You died. Game Over.\n";
+        
+        return true;
+    }
+
+    return false;
+}
+
+bool CombatContents::HandleNextContents(Player* player, Command& command)
+{
+    if (IsPlayerDead(player) || IsLastStage(player->GetLevel()))
+    {
+        return true;
+    }
+    
+    if (command.getCommand() == '0')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool CombatContents::IsPlayerDead(Player* player)
+{
+    if (player->IsDead() == false)
+    {
         return false;
     }
-    return false;
+
+    return true;
 }
 
-void CombatContents::PlayerAttack()
+bool CombatContents::IsMonsterDead()
 {
-    player->attack(*monster);
-    std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
-}
-
-void CombatContents::MonsterAttackBack()
-{
-    monster->attack(*player);
-    std::cout << monster->getName() << " attacks! [Player HP: " << player->GetHP() << "]\n";
-}
-
-bool CombatContents::IsActorDead()
-{
-    if (player->GetHP() <= 0) {
-        std::cout << "You died. Game Over.\n";
-        player->IncreaseHP(player->GetBaseHP());
-        return true;
+    if (monster->IsDead() == false)
+    {
+        return false;
     }
 
-    if (monster->GetHP() <= 0) {
-        std::cout << "You defeated " << monster->getName() << "! Congratulations\n";
-        if (monster->IsBoss())
-        {
-            GameClear();
-        }
-        else
-        {
-			GetStageClearReward();
-        }
-
-        player->addKillCount();
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
-
-void CombatContents::SetupBossMonster()
-{
-    if (player->GetLevel() < 10) return;
-
-    monster->SetIsBoss(true);
-
-    std::cout << "Boss " << monster->getName() << " enters the battlefield! [Boss HP: " << monster->GetBaseHP() << ", DMG: " << monster->GetDamage() << "]\n";
-}
-
-void CombatContents::GameClear()
+void CombatContents::GameClear(Player* player)
 {
     std::cout << "\nYou cleared the game! \nTotal Monsters Defeated: " << player->getMonsterKillCount() << "\n";
 	std::cout << "Thank you for playing!\n";
-	monster->SetIsBoss(false);
-	delete monster;
-	monster = nullptr;
-	GameManager::Instance()->ExitGame();
+
+    //ExitContents(player);
+
+    GameManager::Instance()->ClearGame();
+    
+	//GameManager::Instance()->ExitGame();
 }
 
-void CombatContents::GetStageClearReward()
+void CombatContents::GetStageClearReward(Player* player)
 {
-    player->GainExp(50);
+    player->GainExp(monster->getExp());
 
-    // °ñµå ¾ò±â 10 ~ 20
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 10 ~ 20
     int goldEarned = rand() % 11 + 10;
     player->addGold(goldEarned);
 
@@ -142,8 +155,13 @@ void CombatContents::GetStageClearReward()
     {
         int itemID = 10001 + rand() % 2;
         ItemData* data = Manager<DataManager>::Instance()->itemData.getData(itemID);
-        Item* rewardItem = ItemFactory::CreateItem(data); ¿À·ù
+        Item* rewardItem = ItemFactory::CreateItem(data); ï¿½ï¿½ï¿½ï¿½
         player->addItem(*rewardItem);
         std::cout << "GetItem!!!" << "Congratulations\n";
     }*/
+}
+
+bool CombatContents::IsLastStage(int playerLevel)
+{
+    return PlayerData::IsMaxLevel(playerLevel) && monster->getType() == MonsterData::Type::Boss;
 }

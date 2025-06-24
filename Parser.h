@@ -64,6 +64,18 @@ public:
         return std::stod(dataList[row][categoryMap[column]]);
     }
 
+    template<typename T>
+    T getEnumData(int row, std::string column)
+    {
+        if (categoryMap.find(column) == categoryMap.end())
+        {
+            throw(std::runtime_error("Invalid column"));
+        }
+
+        return
+        static_cast<T>(std::stoi(dataList[row][categoryMap[column]]));
+    }
+    
     int getLine()
     {
         return dataList.size();

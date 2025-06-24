@@ -37,18 +37,18 @@ public:
     Contents();
     ~Contents();
 
-    virtual void InitContents() = 0;
-    virtual void EnterContents() = 0;
-    bool UpdateContents(Command& command);
-    virtual void ExitContents() = 0;
+    virtual void InitContents(Player*) = 0;
+    virtual void EnterContents(Player*) = 0;
+    bool UpdateContents(Player*, Command&);
+    virtual void ExitContents(Player*) = 0;
 };
 
 class MenuContents : public Contents
 {
 public:
-    virtual void InitContents() override;
-    virtual void EnterContents() override;
-    virtual void ExitContents() override;
+    virtual void InitContents(Player*) override;
+    virtual void EnterContents(Player*) override;
+    virtual void ExitContents(Player*) override;
 
     bool IsNickNameNotEmpty(Command& command);
     bool CanChangeContents(Command& command);
@@ -58,22 +58,23 @@ class CombatContents : public Contents
 {
 private:
     Monster* monster = nullptr;
-    Player* player = nullptr;
     bool bIsBoss = false;
 
+    bool IsLastStage(int);
+    
 public:
-    virtual void InitContents() override;
-    virtual void EnterContents() override;
-    virtual void ExitContents() override;
+    virtual void InitContents(Player*) override;
+    virtual void EnterContents(Player*) override;
+    virtual void ExitContents(Player*) override;
 
-    bool HandlePlayerCommand(Command& command);
+    bool HandlePlayerCommand(Player* player, Command& command);
+    bool HandleMonster(Player*);
+    bool HandleNextContents(Player*, Command&);
 private:
-    void PlayerAttack();
-    void MonsterAttackBack();
-    bool IsActorDead();
-    void SetupBossMonster();
-    void GameClear();   
-    void GetStageClearReward();
+    bool IsPlayerDead(Player*);
+    bool IsMonsterDead();
+    void GameClear(Player*);   
+    void GetStageClearReward(Player*);
 };
 enum class ShopState
 {
@@ -92,17 +93,17 @@ private:
 
 public:
     /// <summary>
-    /// index - name  - value ¼øÀÌ¸é °¨»çÇÏ°Ú½À´Ï´Ù (idx = 1ºÎÅÍ ½ÃÀÛ!)
-    ///  ¾ÆÀÌÅÛ¸ñ·Ï °¡Á®¿Í¼­ shopitems¿¡ ³Ö´Â°Í
-    /// shopitems¸¦ º¸¿©ÁÖ´Â ³ª¿­ÇØÁÖ´Â °Í 
-    /// ÇÃ·¹ÀÌ¾î ÀÎº¥Åä¸®¸¦ °¡Á®¿Í¼­ º¸¿©ÁÖ´Â °Í 
+    /// index - name  - value ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Ú½ï¿½ï¿½Ï´ï¿½ (idx = 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!)
+    ///  ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ shopitemsï¿½ï¿½ ï¿½Ö´Â°ï¿½
+    /// shopitemsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ 
+    /// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ 
     /// </summary>
-    virtual void InitContents() override;
-    virtual void EnterContents() override;
-    virtual void ExitContents() override;
+    virtual void InitContents(Player*) override;
+    virtual void EnterContents(Player*) override;
+    virtual void ExitContents(Player*) override;
     void ShowContents();
 
-  // === ¾ÆÀÌÅÛ ±¸¸Å ÆÇ¸Å command ====
+  // === ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¸ï¿½ command ====
  
     bool PlayerCommandHandle(Command& command);
     bool SelectContents(Command& command);

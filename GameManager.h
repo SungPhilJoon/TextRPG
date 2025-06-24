@@ -20,6 +20,8 @@ private:
 
     InputModule* inputModule;
 
+    bool isClear = false;
+
 public:
     GameManager();
     virtual ~GameManager() override;
@@ -32,5 +34,10 @@ public:
     virtual void ExitGame() override;
 
     bool IsNickNameEmpty();
-    void ChangeContents(Command& command, bool callEnter, bool callUpdate);
+    void ChangeContents(Command& command);
+
+    void ClearGame();
+    
+    bool IsFail();
+    bool IsClear();
 };

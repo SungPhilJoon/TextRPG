@@ -6,6 +6,7 @@
 
 #include "Item.h"
 #include"Component.h"
+#include "GameData.h"
 
 class PlayerData;
 class MonsterData;
@@ -28,11 +29,6 @@ protected:
     int incDamage = 0;
     int incDefense = 0;
 
-    bool isDead()
-    {
-        return currentHP <= 0;
-    }
-
 public:
     void SetName(const std::string& name)
     {
@@ -44,7 +40,7 @@ public:
         return currentHP;
     }
 
-    int GetBaseHP() const // ±âº» Ã¼·Â(baseHP) ¹ÝÈ¯, È¸º¹/¾ÆÀÌÅÛ »ç¿ë Á¶°Ç µî¿¡¼­ ±âÁØ°ªÀ¸·Î »ç¿ëµÊ
+    int GetBaseHP() const // ï¿½âº» Ã¼ï¿½ï¿½(baseHP) ï¿½ï¿½È¯, È¸ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         return baseHP;
     }
@@ -99,6 +95,11 @@ public:
         ++this->level;
     }
 
+    bool IsDead()
+    {
+        return currentHP <= 0;
+    }
+
     virtual void attack(Actor& target) = 0;
     virtual void damaged(const Actor& attacker) = 0;
 };
@@ -108,8 +109,8 @@ class Player : public Actor, public ItemUseable
 private:
     PlayerData* data;
 
-    InventoryComponent* inventory; // ÀÎº¥Åä¸® 
-    CurrencyComponent* wallet;  //ÀçÈ­°ü¸® 
+    InventoryComponent* inventory; // ï¿½Îºï¿½ï¿½ä¸® 
+    CurrencyComponent* wallet;  //ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ 
 
     int exp = 0;
     int killCount = 0;
@@ -121,7 +122,7 @@ public:
     void levelUp();
     bool IsNicknameEmpty();
 
-    // 250620 °æÇèÄ¡
+    // 250620 ï¿½ï¿½ï¿½ï¿½Ä¡
     void GainExp(int amount);
     void TryLevelUp();
     int GetExp() const { return exp; }
@@ -130,7 +131,7 @@ public:
     const std::vector<Item*>& getInventory() const;
     bool reduceItem(int idx ,int amount=1);
     void addItem(const Item& item); 
-    void useItemDuringCombat(); // 250622 ÀüÅõ Áß ÀÚµ¿ ¾ÆÀÌÅÛ »ç¿ë ÇÔ¼ö
+    void useItemDuringCombat(); // 250622 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 
     // --- currency ---///
     int getGold()const; 
@@ -157,17 +158,15 @@ class Monster : public Actor
 {
 private:
     MonsterData* data;
-    bool bIsBoss = false;
 
 public:
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
 
-    // 250620 ÇÃ·¹ÀÌ¾î ·¹º§ ±â¹Ý ´É·ÂÄ¡ ¼³Á¤¿ëÀ¸·Î ¼öÁ¤, playerLevelÀ» ³Ñ±â±âÀ§ÇØ Ãß°¡
-    void setData(MonsterData* data, int playerLevel);
+    // 250620 ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½É·ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, playerLevelï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+    void setData(int);
 
     const std::string getName() const;
-
-    void SetIsBoss(bool b) { bIsBoss = b;  }
-    bool IsBoss() const { return bIsBoss;  }
+    MonsterData::Type getType() const;
+    int getExp() const;
 };

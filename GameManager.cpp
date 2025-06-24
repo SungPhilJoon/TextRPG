@@ -4,6 +4,7 @@
 #include "InputModule.h"
 #include "Contents.h"
 #include "Actor.h"
+#include "GameData.h"
 
 template<>
 GameManager* Manager<GameManager>::instance = nullptr;
@@ -42,9 +43,9 @@ GameManager::~GameManager()
 
 void GameManager::InitGame()
 {
-    contentsMap[ContentsType::Menu]->InitContents();
-    contentsMap[ContentsType::Combat]->InitContents();
-    contentsMap[ContentsType::Shop]->InitContents();
+    contentsMap[ContentsType::Menu]->InitContents(player);
+    contentsMap[ContentsType::Combat]->InitContents(player);
+    contentsMap[ContentsType::Shop]->InitContents(player);
 
     currentContents = ContentsType::Menu;
 }
@@ -70,7 +71,7 @@ void GameManager::EnterGame()
     auto playerData = DataManager::Instance()->playerData.getData(1);
     player->setData(playerData);
 
-    contentsMap[currentContents]->EnterContents();
+    contentsMap[currentContents]->EnterContents(player);
 
 }
 
@@ -89,28 +90,37 @@ bool GameManager::UpdateGame()
 
     if (currentCommand.getCommand() == 'q')
     {
-        ExitGame();
+        //ExitGame();
         return false;
     }
 
-    if (currentContents == ContentsType::Menu)
-    {
-        ChangeContents(currentCommand, true, true);
-        return true;
-    }
+    // if (currentContents == ContentsType::Menu)
+    // {
+    //     ChangeContents(currentCommand);
+    //     return true;
+    // }
 
-    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
-
-    if (!keepGoing)
+    //bool keepGoing = contentsMap[currentContents]->UpdateContents(player, currentCommand);
+    if (contentsMap[currentContents]->UpdateContents(player, currentCommand))
     {
-        Command returnMenuCommand;
-        returnMenuCommand.setCommand('0');
-        ChangeContents(returnMenuCommand, true, false);
+        if (IsFail() || IsClear())
+        {
+            return false;
+        }
+        
+        ChangeContents(currentCommand);
     }
+    
+    // if (!keepGoing)
+    // {
+    //     Command returnMenuCommand;
+    //     returnMenuCommand.setCommand('0');
+    //     ChangeContents(returnMenuCommand);
+    // }
 
     return true;
 
-    //if (currentContents == ContentsType::Shop) // »óÁ¡ÀÏ¶§´Â falseÀÏ¶§ menu·Î ÀÌµ¿ 
+    //if (currentContents == ContentsType::Shop) // ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ falseï¿½Ï¶ï¿½ menuï¿½ï¿½ ï¿½Ìµï¿½ 
     //{
 
     //    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
@@ -137,26 +147,32 @@ bool GameManager::IsNickNameEmpty()
     return player->IsNicknameEmpty();
 }
 
-void GameManager::ChangeContents(Command& command, bool callEnter, bool callUpdate)
+void GameManager::ChangeContents(Command& command)
 {
-    contentsMap[currentContents]->ExitContents(); // ÀüÅõ ExitContents ºÒ·ÁÁü
+    contentsMap[currentContents]->ExitContents(player); // ï¿½ï¿½ï¿½ï¿½ ExitContents ï¿½Ò·ï¿½ï¿½ï¿½
 
-    int commandNum = command.getCommand() - '0'; // command´Â ÀüÅõ°¡ Á¾·áµÇ¾úÀ¸¹Ç·Î, menuÀÇ command°¡ ºÒ·ÁÁü 
-    currentContents = static_cast<ContentsType>(commandNum);
+    //int commandNum = command.getCommand() - '0'; // commandï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, menuï¿½ï¿½ commandï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ 
+    //currentContents = static_cast<ContentsType>(commandNum);
 
-    /*std::string commandContext = "";
+    std::string commandContext = "";
     commandContext += command.getCommand();
 
     int commandNum = std::stoi(commandContext);
-    currentContents = static_cast<ContentsType>(commandNum);*/
+    currentContents = static_cast<ContentsType>(commandNum);
+    contentsMap[currentContents]->EnterContents(player);
+}
 
-    if (callEnter)
-    {
-        contentsMap[currentContents]->EnterContents();
-    }
+void GameManager::ClearGame()
+{
+    isClear = true;
+}
 
-    if (callUpdate)
-    {
-        contentsMap[currentContents]->UpdateContents(command);
-    }
+bool GameManager::IsFail()
+{
+    return player->IsDead();
+}
+
+bool GameManager::IsClear()
+{
+    return isClear; 
 }

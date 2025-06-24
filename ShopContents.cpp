@@ -11,7 +11,7 @@
 
 
 
-void ShopContents::InitContents()
+void ShopContents::InitContents(Player* player)
 {
     
     *sequencer << [this](Command& command) { return this->PlayerCommandHandle(command); };
@@ -19,18 +19,33 @@ void ShopContents::InitContents()
    
 }
 
-void ShopContents::EnterContents()
+void ShopContents::EnterContents(Player* player)
 {
-    player = GameManager::Instance()->getPlayer();
     currentState = ShopState::Menu;
     ShowContents();
 }
 
-void ShopContents::ExitContents()
+void ShopContents::ExitContents(Player* player)
 {
    
-
 }
+
+void ShopContents::EnterShop()
+{
+    enterShop = true;
+}
+
+void ShopContents::ExitShop()
+{
+    enterShop = false;
+}
+
+bool ShopContents::IsEnterShop() const
+{
+    return enterShop;
+}
+
+
 bool ShopContents::PlayerCommandHandle(Command& command)
 {
     switch (currentState)
@@ -93,7 +108,7 @@ bool ShopContents::SelectContents(Command& command)
             case '2':
                 currentState = ShopState::Selling;
 				std::cout << "Your Inventory:" << std::endl;
-				//player->addItem(*ItemFactory::CreateItem(shopItems[0])); // ¾ÆÀÌÅÛ ±â´É ±¸ÇöµÇ¸é Ã¹ ¹øÂ° ¾ÆÀÌÅÛÀ» Å×½ºÆ®·Î Ãß°¡ ÇØº¸°í ÀÌ°É·Î ±¸¸Å ±â´É ±¸Çö °¡´ÉÇÒ°Í °°À½.
+				//player->addItem(*ItemFactory::CreateItem(shopItems[0])); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½Øºï¿½ï¿½ï¿½ ï¿½Ì°É·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ ï¿½ï¿½ï¿½ï¿½.
           
 				std::cout << player->getInventory().size() << " items in inventory." << std::endl;
                 
@@ -115,12 +130,12 @@ bool ShopContents::SelectContents(Command& command)
                 }
                 break;
 
-            case 'e': //»óÁ¡ ³ª°¡±â
+            case 'e': //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 std::cout << "Exiting shop" << std::endl;
-                return false;  // »óÁ¡ Á¾·á ½ÅÈ£
+                return false;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
             case 'q': 
                 std::cout << "Quit Game" << std::endl;
-                return false;  // »óÁ¡ Á¾·á ½ÅÈ£
+                return false;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
             default:
                 std::cout << "Invalid input, please reinput." << std::endl;
                 return true;
@@ -140,7 +155,7 @@ bool ShopContents::HandleBuySelect(Command& command)
         if (idx >= 0 && shopItems.size() > idx)
         {
       
-            if (player->reduceGold(shopItems[idx]->getValue())) // ±¸¸Å Çß´Ù¸é?
+            if (player->reduceGold(shopItems[idx]->getValue())) // ï¿½ï¿½ï¿½ï¿½ ï¿½ß´Ù¸ï¿½?
             {
                 ItemData* data = Manager<DataManager>::Instance()->itemData.getData(idx);
                 player->addItem(*(ItemFactory::CreateItem(data))); 

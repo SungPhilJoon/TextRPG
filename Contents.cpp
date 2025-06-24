@@ -13,9 +13,9 @@ void EnumeratorSequencer::operator<<(std::function<bool(Command&)> func)
 
 bool EnumeratorSequencer::ExecuteSequence(Command& command)
 {
-    for (auto& func : sequencer)
+    for (int i = 0; i < sequencer.size(); i++)
     {
-        if (!func(command))
+        if (!sequencer[i](command))
         {
             return false;
         }
@@ -31,7 +31,7 @@ Contents::~Contents()
     delete sequencer;
 }
 
-bool Contents::UpdateContents(Command& command)
+bool Contents::UpdateContents(Player* player, Command& command)
 {
     return sequencer->ExecuteSequence(command);
 }

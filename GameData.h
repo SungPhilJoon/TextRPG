@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
-
 
 class DataManager;
 class Parser;
@@ -18,7 +16,7 @@ public:
         this->index = index;
     }
 
-    int getIndex() const
+    virtual int getIndex() const
     {
         return index;
     }
@@ -31,6 +29,9 @@ private:
     int damage;
     int defense;
     int level;
+    int needExp;
+
+    static int MAX_LEVEL;
 
 public:
     int getHP() const
@@ -48,6 +49,11 @@ public:
     int getLevel() const
     {
         return level;
+    }
+
+    static bool IsMaxLevel(int level)
+    {
+        return MAX_LEVEL <= level;
     }
 
     static void InitializeData(DataManager& dataManager, Parser& parser);
@@ -55,33 +61,58 @@ public:
 
 class MonsterData : public GameData
 {
+public:
+    enum class Type
+    {
+        Normal,
+        Boss
+    };
+    
 private:
-    int hp;
-    int damage;
-    int defense;
+    // int hp;
+    // int damage;
+    // int defense;
     int level;
+    int appearLevel;
+    int exp;
     std::string name;
+    Type type;
 
 public:
-    int getHP() const
-    {
-        return hp;
-    }
-    int getDamage() const
-    {
-        return damage;
-    }
-    int getDefense() const
-    {
-        return defense;
-    }
+    // int getHP() const
+    // {
+    //     return hp;
+    // }
+    // int getDamage() const
+    // {
+    //     return damage;
+    // }
+    // int getDefense() const
+    // {
+    //     return defense;
+    // }
+    
     int getLevel() const
     {
         return level;
     }
+    int getExp() const
+    {
+        return exp;
+    }
     const std::string getName() const
     {
         return name;
+    }
+
+    Type getType() const
+    {
+        return type;
+    }
+
+    virtual int getIndex() const override
+    {
+        return appearLevel;   
     }
 
     static void InitializeData(DataManager& dataManager, Parser& parser);
