@@ -157,6 +157,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Contents.cpp" />
+    <ClCompile Include="ItemFactory.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="MenuContents.cpp" />
     <ClCompile Include="ShopContents.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Contents.h" />
+    <ClInclude Include="ItemFactory.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="GameManager.h" />

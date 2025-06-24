@@ -8,7 +8,7 @@
 #include "GameManager.h"
 #include "GameData.h"
 #include "Item.h"
-
+#include "ItemFactory.h"
 
 
 void ShopContents::InitContents()
@@ -93,7 +93,7 @@ bool ShopContents::SelectContents(Command& command)
             case '2':
                 currentState = ShopState::Selling;
 				std::cout << "Your Inventory:" << std::endl;
-				//player->addItem(*ItemFactory::CreateItem(shopItems[0])); // ¾ÆÀÌÅÛ ±â´É ±¸ÇöµÇ¸é Ã¹ ¹øÂ° ¾ÆÀÌÅÛÀ» Å×½ºÆ®·Î Ãß°¡ ÇØº¸°í ÀÌ°É·Î ±¸¸Å ±â´É ±¸Çö °¡´ÉÇÒ°Í °°À½.
+				
           
 				std::cout << player->getInventory().size() << " items in inventory." << std::endl;
                 
@@ -115,12 +115,12 @@ bool ShopContents::SelectContents(Command& command)
                 }
                 break;
 
-            case 'e': //»óÁ¡ ³ª°¡±â
+            case 'e': //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 std::cout << "Exiting shop" << std::endl;
-                return false;  // »óÁ¡ Á¾·á ½ÅÈ£
+                return false;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
             case 'q': 
                 std::cout << "Quit Game" << std::endl;
-                return false;  // »óÁ¡ Á¾·á ½ÅÈ£
+                return false;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
             default:
                 std::cout << "Invalid input, please reinput." << std::endl;
                 return true;
@@ -140,10 +140,9 @@ bool ShopContents::HandleBuySelect(Command& command)
         if (idx >= 0 && shopItems.size() > idx)
         {
       
-            if (player->reduceGold(shopItems[idx]->getValue())) // ±¸¸Å Çß´Ù¸é?
+            if (player->reduceGold(shopItems[idx]->getValue())) // ï¿½ï¿½ï¿½ï¿½ ï¿½ß´Ù¸ï¿½?
             {
-                ItemData* data = Manager<DataManager>::Instance()->itemData.getData(idx);
-                player->addItem(*(ItemFactory::CreateItem(data))); 
+                player->addItem(shopItems[idx]->getIndex()); 
                 std::cout << "Buy " << shopItems[idx]->getName()<< "!!!" << std::endl;
 
             }

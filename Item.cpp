@@ -27,6 +27,11 @@ int Item::getCount() const
     return count;
 }
 
+const ItemData* Item::getData() const
+{
+    return data;
+}
+
 void Item::addItem(int amount)
 {
     count += amount;
@@ -46,18 +51,3 @@ void PotionItem::useItem(ItemUseable& target)
     decreaseItem();
 }
 
-Item* ItemFactory::CreateItem(ItemData* data)
-{
-    int  num = (data->getIndex()%10);
-    switch (num)
-    {
-    case 1:
-        return new UpgradeDamageItem(data);
-    case 2:
-        return new PotionItem(data);
-
-    default:
-        return nullptr;
-    }
-    return nullptr;
-}

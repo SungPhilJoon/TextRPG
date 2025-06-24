@@ -38,13 +38,14 @@ class InventoryComponent : public Component
 private:
     std::vector<Item*> items;
     int FindItem(const Item& target) const;
+    int FindItem(const int idx) const;
 
 public:
     ~InventoryComponent();
     const std::vector<Item*>& getInventory() const;
     void initialize() override;
     void destroy() override;
-    void addItem(const Item& item);
+    void addItem(const int itemidx, int amount);
     bool reduceItem(int idx, int amount);
  
 };

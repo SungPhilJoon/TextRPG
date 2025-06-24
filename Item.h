@@ -27,6 +27,7 @@ public:
     int getValue() const;
 
     int getCount() const;
+    const ItemData* getData() const;
 
     void addItem(int amount = 1);
 
@@ -45,7 +46,7 @@ class UpgradeDamageItem : public Item
 {
 public:
     UpgradeDamageItem() { type = ItemType::UpgradeDamage; count = 1; }
-    UpgradeDamageItem(ItemData* itemData) { type = ItemType::UpgradeDamage; count = 1; data = itemData; }
+    UpgradeDamageItem(ItemData* itemData, int cnt = 1) { type = ItemType::UpgradeDamage; count = cnt; data = itemData; }
     virtual void useItem(ItemUseable&) override;
     virtual Item* clone() const override { return new UpgradeDamageItem(*this);}
 };
@@ -54,7 +55,9 @@ class PotionItem : public Item
 {
 public:
     PotionItem() { type = ItemType::Potion; count = 1;}
-    PotionItem(ItemData* itemData) { type = ItemType::Potion; count = 1; data = itemData;
+    PotionItem(ItemData* itemData, int cnt = 1)
+    {
+        type = ItemType::Potion; count = cnt; data = itemData;
     }
     virtual void useItem(ItemUseable&) override;
     virtual Item* clone() const override{ return new PotionItem(*this);}
@@ -76,9 +79,4 @@ public:
 
     virtual void useItem(Item&) = 0;
 };
-class ItemFactory  // 아이템 인덱스에 따른 instance 제공 
-{
-public:
-    static Item* CreateItem(ItemData* data);
-    
-};
+

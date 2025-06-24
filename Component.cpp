@@ -3,14 +3,18 @@
 #include"Item.h"
 
 #include"Actor.h"
+#include "GameData.h"
+#include <iterator>  
+
+#include "ItemFactory.h"
 
 
 void Component::initialize() {
-    // ÇÊ¿ä½Ã override
+    // ï¿½Ê¿ï¿½ï¿½ override
 }
 void Component::destroy() 
 {
-    // ÇÊ¿ä½Ã override
+    // ï¿½Ê¿ï¿½ï¿½ override
 }
 
 
@@ -51,6 +55,19 @@ int InventoryComponent::FindItem(const Item& target) const
     return (it != items.end()) ? static_cast<int>(std::distance(items.begin(), it)) : -1;
 }
 
+int InventoryComponent::FindItem(const int idx) const
+{
+    for (int i = 0; i < items.size(); ++i)
+    {
+        int num =items[i]->getData()->getIndex();
+        if (items[i]->getData()->getIndex() == idx)
+        {
+            return i;
+        }
+    }
+    return -1;  // ëª» ì°¾ìœ¼ë©´ -1 ë°˜í™˜
+}
+
 InventoryComponent::~InventoryComponent()
 {
     destroy();
@@ -66,12 +83,12 @@ const std::vector<Item*>& InventoryComponent::getInventory() const
     {
         return std::vector<Item*>();
     }
-    //return std::vector<Item*>();
+   
 }
 
 void InventoryComponent::initialize()
 {
-    // ÇÊ¿ä ½Ã ±¸Çö
+    // ï¿½Ê¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 void InventoryComponent::destroy() 
@@ -82,20 +99,24 @@ void InventoryComponent::destroy()
     items.clear();
 }
 
-void InventoryComponent::addItem(const Item& item) {
-    int index = FindItem(item);
-    if (index >= 0) {
-        items[index]->addItem(item.getCount());
+void InventoryComponent::addItem(const int itemidx, int amount)
+{
+    int idx = FindItem(itemidx);
+    if (idx != -1) 
+    {
+        items[idx]->addItem(amount);
     }
-    else {
-        items.push_back(item.clone()); 
+    else
+    {
+        Item* additem = ItemFactory::getInstance().createItem(itemidx, amount);
+        if (additem)
+        {
+            items.push_back(additem);
+        }
     }
 }
-
 bool InventoryComponent::reduceItem(int idx, int amount)
 {
-    idx -= 1; // »ç¿ëÀÚ ÀÔ·ÂÀÌ 1ºÎÅÍ ½ÃÀÛÇÑ´Ù°í °¡Á¤
-
     
     if (idx < 0 || idx >= items.size())
     {

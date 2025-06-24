@@ -31,7 +31,7 @@ void Player::useItemDuringCombat()
 {
     const auto& inventory = getInventory();
 
-    // Ã¼·ÂÀÌ ÃÖ´ëÃ¼·Âº¸´Ù 50 ÀÌ»ó ÁÙ¾úÀ» ¶§ Æ÷¼Ç »ç¿ë
+    // Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½Ã¼ï¿½Âºï¿½ï¿½ï¿½ 50 ï¿½Ì»ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     if (GetHP() <= GetBaseHP() - 50)
     {
         for (Item* item : inventory)
@@ -63,7 +63,7 @@ void Player::useItemDuringCombat()
 
 void Player::levelUp()
 {
-    // 250620 ´É·ÂÄ¡ ¼ºÀå È®ÀÎÀ» À§ÇÑ ÀÌÀü°ª ÀúÀå
+    // 250620 ï¿½É·ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     int prevHP = baseHP;
     int prevDamage = baseDamage;
     int prevDefense = baseDefense;
@@ -97,10 +97,12 @@ bool Player::reduceItem(int idx, int amount)
     return inventory->reduceItem(idx, amount);
 }
 
-void Player::addItem(const Item& item)
+void Player::addItem(int itemidx, int amount)
 {
-    return inventory->addItem(item);
+    return inventory->addItem(itemidx,amount);
 }
+
+
 
 
 
@@ -143,14 +145,14 @@ void Player::setData(PlayerData* data)
 	std::cout << "Level: " << level << "\n\n";
 }
 
-// 250620 °æÇèÄ¡ ¹× ·¹º§¸µ
+// 250620 ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void Player::GainExp(int amount)
 {
     exp += amount;
     std::cout << "\n[EXP] +" << amount << " (Current EXP: " << exp << "/100)\n";
     TryLevelUp();
 }
-// 250620 °æÇèÄ¡ ¿ä±¸·® ¹× ·¹º§ 10 Á¦ÇÑ
+// 250620 ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ä±¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 10 ï¿½ï¿½ï¿½ï¿½
 void Player::TryLevelUp()
 {
     while (exp >= 100 && level < 10)
@@ -177,7 +179,7 @@ void Monster::damaged(const Actor& attacker)
 
 }
 
-// 250620 setData ÇÔ¼ö¿¡¼­ playerLevelµµ ³Ñ±âµµ·Ï ÇØ¼­ ±×°É ±â¹ÝÀ¸·Î ¸ó½ºÅÍ ½ºÅÈ ·£´ý »ý¼º ¼öÁ¤
+// 250620 setData ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ playerLevelï¿½ï¿½ ï¿½Ñ±âµµï¿½ï¿½ ï¿½Ø¼ï¿½ ï¿½×°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 void Monster::setData(MonsterData* data, int playerLevel)
 {
     this->data = data;
@@ -202,7 +204,7 @@ void Monster::setData(MonsterData* data, int playerLevel)
 
 const std::string Monster::getName() const
 {
-    // 250620 10·¹º§ ¶§ ¸¸³ª´Â ¸ó½ºÅÍÀÇ ÀÌ¸§¿¡ Á¢µÎ»ç¿¡ boss¸¦ ºÙÀÌ±â À§ÇØ ¼öÁ¤
-    // ÀÌ¸§À» data·ÎºÎÅÍ °¡Á®¿ÀÁö ¾Ê°í, ½ÇÁ¦ ¸â¹ö º¯¼ö name ÂüÁ¶
+    // 250620 10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î»ç¿¡ bossï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ï¿½Ì¸ï¿½ï¿½ï¿½ dataï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ name ï¿½ï¿½ï¿½ï¿½
     return name;
 }
