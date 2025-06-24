@@ -114,17 +114,18 @@ private:
     int exp = 0;
     int killCount = 0;
 
+    void levelUp();
+    void TryLevelUp();
+    int GetExp() const { return exp; }
+
 public:
     Player();
 
     void setData(PlayerData* data);
-    void levelUp();
     bool IsNicknameEmpty();
 
     // 250620 ����ġ
     void GainExp(int amount);
-    void TryLevelUp();
-    int GetExp() const { return exp; }
 
     // ---- items ----//
     const std::vector<Item*>& getInventory() const;

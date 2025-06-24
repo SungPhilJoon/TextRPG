@@ -68,7 +68,20 @@ void Player::levelUp()
     int prevDamage = baseDamage;
     int prevDefense = baseDefense;
 
+    if (level >= 10)
+    {
+        std::cout << "[LEVEL UP BLOCKED] Maximul level (10) reached.\n";
+        return;
+    }
+
     increaseLevel();
+
+    if (level > 10)
+    {
+        std::cerr << "[Warning] Abnormal level detected: " << level << ". Resetting to 10. \n";
+        level = 10;
+        return;
+    }
     setData(Manager<DataManager>::Instance()->playerData.getData(level));
 
     std::cout << "NOW STATUS\n";
@@ -135,9 +148,6 @@ void Player::setData(PlayerData* data)
 
     int prevIncDamage = incDamage;
     int prevIncDefense = incDefense;
-
-    incDamage = prevIncDamage;
-    incDefense = prevIncDefense;
 
     std::cout << "\n\nHello! " << name << "\n";
 	std::cout << "HP: " << baseHP << "\n";
