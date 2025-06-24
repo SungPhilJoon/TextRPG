@@ -4,7 +4,7 @@
 
 Item::~Item()
 {
-    delete data;
+    //delete data;
 }
 
 void Item::decreaseItem(int amount)
