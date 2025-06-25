@@ -9,7 +9,7 @@
 #include "GameData.h"
 #include "Item.h"
 #include "ItemFactory.h"
-
+#include "StringUtil.h"
 
 
 
@@ -136,36 +136,63 @@ bool ShopContents::HandleSellSelect(Command& command)
     return true;
 }   
 
+std::string PadLeft(const std::string& str, size_t width, char space = ' ')
+{
+    if (str.length() >= width) return str;
+    return str + std::string(width - str.length(), space);
+}
+
+std::string PadRight(const std::string& str, size_t width, char space = ' ')
+{
+    if (str.length() >= width) return str;
+    return std::string(width - str.length(), space) + str;
+}
+
 void ShopContents::ShowShopItems()
 {
     using namespace std;
-	cout << endl << "Shop Items:" << endl;
-    cout << left << setw(20) << "Item" << right << setw(10) << "Price" << endl << string(40, '-') << endl;
+    string Line = string(40, '-');
+    StringUtil::AppendStart();
+    StringUtil::AppendLine();
+    StringUtil::AppendLine(PadLeft("Item", 20), PadLeft("| Price", 10));
+    StringUtil::AppendLine(Line);
 
     for (auto item : shopItems)
     {
-        cout << left << setw(20) << item->getName() << right << setw(10) << item->getValue() << right << setw(10) << "Gold" << endl <<endl ;
+        StringUtil::AppendLine(PadLeft(item->getName(), 20), "| ", item->getValue(), "  Gold");
+        StringUtil::NewLine();
     }
-    cout << "Button [0] : Buy Attack Booster" << endl << "Button [1] : Buy HPPostion" << endl <<endl;
+    StringUtil::AppendLine(Line);
+    StringUtil::AppendLine("Button [0] : Buy Attack Booster");
+    StringUtil::AppendLine("Button [1] : Buy HPPostion");
+    StringUtil::NewLine();
+    StringUtil::AppendEnd();
 }
 
 void ShopContents::ShowPlayerInventoryToSell()
 {
     using namespace std;
+    string Line = string(40, '-');
     int itemIndex = 0;
-    cout << endl;
-    cout << player->getInventory().size() << " items in inventory." << endl <<endl;
+    StringUtil::AppendStart();
+    StringUtil::NewLine();
+    StringUtil::AppendLine(player->getInventory().size(), " items in inventory.");
+    StringUtil::AppendLine(Line);
     for (auto item : player->getInventory())
     {
-        cout << "[" << itemIndex << "] " << setw(15) << left << item->getName() << " | Count: " << setw(3) << item->getCount() << " | Price: " << item->getValue() << "Gold" << endl <<endl;
+        StringUtil::AppendLine("[", itemIndex, "] ", PadLeft(item->getName(), 15), "I count:", PadLeft(to_string(item->getCount()), 3), "I Price:", item->getValue() * 6 / 10, "  Gold");
+        StringUtil::NewLine();
         ++itemIndex;
     }
     if (player->getInventory().empty())
     {
-        std::cout << "Your inventory is empty." << std::endl;
+        StringUtil::AppendLine("Your inventory is empty.");
     }
     else
     {
-        std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl <<endl;
+        StringUtil::NewLine();
+        StringUtil::AppendLine("To sell Item. Press the number of the item you want to sell.");
+        StringUtil::NewLine();
     }
+    StringUtil::AppendEnd();
 }
