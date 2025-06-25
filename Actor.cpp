@@ -31,31 +31,23 @@ void Player::useItemDuringCombat()
 {
     const auto& inventory = getInventory();
 
-    // ü���� �ִ�ü�º��� 50 �̻� �پ��� �� ���� ���
-    if (GetHP() <= GetBaseHP() - 50)
+    for (Item* item : inventory)
     {
-        for (Item* item : inventory)
+        if (item->getType() == ItemType::Potion && item->getCount() > 0)
         {
-            if (item->getType() == ItemType::Potion)
-            {
-                item->useItem(*this);
-                std::cout << "[Item Use] Potion.\n";
-                std::cout << "[Player HP]: " << GetHP() << " / " << GetBaseHP() << "\n";
-                return;
-            }
+            item->useItem(*this);
+            std::cout << "[Item Use] Potion.\n";
+            std::cout << "[Player HP]: " << GetHP() << " / " << GetBaseHP() << "\n";
+            return;
         }
-    }
-    else
-    {
-        for (Item* item : inventory)
+
+        if (item->getType() == ItemType::UpgradeDamage && item->getCount() > 0)
         {
-            if (item->getType() == ItemType::UpgradeDamage)
-            {
-                std::cout << "[Item Use] Damage Buff.\n";
-                std::cout << "[Player ATK]: " << GetDamage() << " + 10\n";
-                item->useItem(*this);
-                return;
-            }
+            std::cout << "[Item Use] Damage Buff.\n";
+            std::cout << "[Player ATK]: " << GetDamage() << " + 10\n";
+            item->useItem(*this);
+            std::cout << "[Player ATK]: " << GetDamage() << "\n";
+            return;
         }
     }
 }
