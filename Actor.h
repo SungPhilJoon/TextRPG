@@ -49,11 +49,27 @@ public:
         return baseHP;
     }
 
-    int GetDamage() const
+    int GetBaseDamage() const
     {
-        return baseDamage * level + incDamage;
+        return baseDamage;
     }
 
+    int GetDamage() const
+    {
+        return baseDamage + incDamage;
+    }
+
+    int GetIncDamage() const
+    {
+        return incDamage;
+    }
+
+    std::string GetIncDamageString() const
+    {
+        if (GetIncDamage() > 0)
+            return " (+" + std::to_string(GetIncDamage()) + ")";
+        return "";
+    }
     int GetLevel() const
     {
         return level;

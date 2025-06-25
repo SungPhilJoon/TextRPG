@@ -18,7 +18,7 @@ void Player::attack(Actor& target)
 
 void Player::damaged(const Actor& attacker)
 {
-    int damage = attacker.GetDamage() - this->GetDefense();
+    int damage = attacker.GetDamage();
     this->DecreaseHP(damage);
 }
 
@@ -36,17 +36,16 @@ void Player::useItemDuringCombat()
         if (item->getType() == ItemType::Potion && item->getCount() > 0)
         {
             item->useItem(*this);
-            std::cout << "[Item Use] Potion.\n";
+            std::cout << "[Item Used] Healing Potion.\n";
             std::cout << "[Player HP]: " << GetHP() << " / " << GetBaseHP() << "\n";
             return;
         }
 
         if (item->getType() == ItemType::UpgradeDamage && item->getCount() > 0)
         {
-            std::cout << "[Item Use] Damage Buff.\n";
-            std::cout << "[Player ATK]: " << GetDamage() << " + 10\n";
+            std::cout << "[Item Used] Permanent Damage Buff Item.\n";
             item->useItem(*this);
-            std::cout << "[Player ATK]: " << GetDamage() << "\n";
+            std::cout << "[Player ATK]: " << GetBaseDamage() << GetIncDamageString() << "\n";
             return;
         }
     }
@@ -78,7 +77,7 @@ void Player::levelUp()
 
     std::cout << "NOW STATUS\n";
     std::cout << "- HP: " << prevHP << " -> " << baseHP << "\n";
-    std::cout << "- ATK: " << prevDamage << " -> " << baseDamage << "\n";
+    std::cout << "- ATK: " << prevDamage << GetIncDamageString() <<" -> " << baseDamage << GetIncDamageString() << "\n";
     std::cout << "- DEF: " << prevDefense << " -> " << baseDefense << "\n";
 }
 
@@ -143,7 +142,7 @@ void Player::setData(PlayerData* data)
 
     std::cout << "\n\nHello! " << name << "\n";
 	std::cout << "HP: " << baseHP << "\n";
-	std::cout << "ATK: " << baseDamage << "\n";
+    std::cout << "ATK: " << baseDamage << GetIncDamageString() << "\n";
 	std::cout << "Level: " << level << "\n\n";
 }
 
