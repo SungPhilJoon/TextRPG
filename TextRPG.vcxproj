@@ -169,6 +169,7 @@
     <ClCompile Include="InputModule.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="StringUtil.cpp" />
     <ClCompile Include="TextRPG.cpp" />
   </ItemGroup>
   <ItemGroup>
