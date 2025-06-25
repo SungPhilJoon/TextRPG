@@ -37,16 +37,23 @@ void Player::useItemDuringCombat()
         if (item->getType() == ItemType::Potion && item->getCount() > 0)
         {
             item->useItem(*this);
-            std::cout << "[Item Used] Healing Potion.\n";
-            std::cout << "[Player HP]: " << GetHP() << " / " << GetBaseHP() << "\n";
+
+            StringUtil::AppendStart();
+            StringUtil::AppendLine("    [Item Used] Healing Potion.");
+            StringUtil::AppendLine();
+            StringUtil::AppendLine("    [Player HP]: ", GetHP(), " / ", GetBaseHP());
+            StringUtil::AppendEnd(0);
             return;
         }
 
         if (item->getType() == ItemType::UpgradeDamage && item->getCount() > 0)
         {
-            std::cout << "[Item Used] Permanent Damage Buff Item.\n";
+            StringUtil::AppendStart();
+            StringUtil::AppendLine("    [Item Used] Permanent Damage Buff Item.");
+            StringUtil::AppendLine();
             item->useItem(*this);
-            std::cout << "[Player ATK]: " << GetBaseDamage() << GetIncDamageString() << "\n";
+            StringUtil::AppendLine("    [Player ATK]: ", GetBaseDamage(), GetIncDamageString());
+            StringUtil::AppendEnd(0);
             return;
         }
     }
@@ -79,7 +86,7 @@ void Player::levelUp()
     StringUtil::AppendStart();
     StringUtil::AppendLine("LEVEL UP!!! NOW STATUS: ");
     StringUtil::AppendLine("- HP: ", prevHP, " -> ", baseHP);
-    StringUtil::AppendLine("- ATK: ", prevDamage, " -> ", baseDamage);
+    StringUtil::AppendLine("- ATK: ", prevDamage, GetIncDamageString(),  " -> ", baseDamage, GetIncDamageString());
     StringUtil::AppendLine("- DEF: ", prevDefense, " -> ", baseDefense);
     StringUtil::AppendEnd();
 }

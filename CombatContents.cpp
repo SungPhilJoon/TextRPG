@@ -32,7 +32,7 @@ void CombatContents::EnterContents()
 
     StringUtil::AppendStart();
     StringUtil::AppendLine();
-	StringUtil::AppendLine("    << ", monster->getName(), " appeared! HP: ", monster->getName(), ", Damage: ", monster->GetDamage(), " >>");
+	StringUtil::AppendLine("    << ", monster->getName(), " appeared! HP: ", monster->GetHP(), ", Damage: ", monster->GetDamage(), " >>");
     StringUtil::AppendEnd(0);
     SetupBossMonster();
 }
