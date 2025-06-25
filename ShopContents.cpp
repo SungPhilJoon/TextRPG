@@ -121,7 +121,7 @@ bool ShopContents::HandleSellSelect(Command& command)
     int idx = command.getCommand() - '0';
     if (idx >= 0 && player->getInventory().size() > idx)
     {
-        int addGold = player->getInventory()[idx]->getValue();
+        int addGold = player->getInventory()[idx]->getValue()*6/10;
         player->reduceItem(idx);
         player->addGold(addGold);
         std::cout << "SellItem" << std::endl;
@@ -131,7 +131,6 @@ bool ShopContents::HandleSellSelect(Command& command)
         std::cout << "error idx" << std::endl;
 
     }
-    ShowMenu();
     BindSelectHandler();
     ShowMenu();
     return true;
@@ -140,24 +139,25 @@ bool ShopContents::HandleSellSelect(Command& command)
 void ShopContents::ShowShopItems()
 {
     using namespace std;
+	cout << endl << "Shop Items:" << endl;
     cout << left << setw(20) << "Item" << right << setw(10) << "Price" << endl << string(40, '-') << endl;
 
     for (auto item : shopItems)
     {
         cout << left << setw(20) << item->getName() << right << setw(10) << item->getValue() << right << setw(10) << "Gold" << endl <<endl ;
     }
-    cout << "Button 0 : Buy Attack Booster" << endl << "Button 1 : Buy HPPostion" << endl;
+    cout << "Button [0] : Buy Attack Booster" << endl << "Button [1] : Buy HPPostion" << endl <<endl;
 }
 
 void ShopContents::ShowPlayerInventoryToSell()
 {
     using namespace std;
     int itemIndex = 0;
-    cout << "Your Inventory:" << endl;
-    cout << player->getInventory().size() << " items in inventory." << endl;
+    cout << endl;
+    cout << player->getInventory().size() << " items in inventory." << endl <<endl;
     for (auto item : player->getInventory())
     {
-        cout << "[" << itemIndex << "] " << setw(15) << left << item->getName() << " | Count: " << setw(3) << item->getCount() << " | Price: " << item->getValue() << "Gold" << endl;
+        cout << "[" << itemIndex << "] " << setw(15) << left << item->getName() << " | Count: " << setw(3) << item->getCount() << " | Price: " << item->getValue() << "Gold" << endl <<endl;
         ++itemIndex;
     }
     if (player->getInventory().empty())
@@ -166,6 +166,6 @@ void ShopContents::ShowPlayerInventoryToSell()
     }
     else
     {
-        std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl;
+        std::cout << "To sell Item. Press the number of the item you want to sell." << std::endl <<endl;
     }
 }
