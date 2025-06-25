@@ -109,6 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,6 +183,7 @@
     <ClInclude Include="InputModule.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="StringUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PlayerData.csv">
