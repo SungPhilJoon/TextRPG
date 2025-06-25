@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -46,7 +48,3 @@ public:
         std::cout << std::endl;
     }
 };
-
-std::string StringUtil::newline = "\n"; 
-std::string StringUtil::space = " ";
-std::ostringstream StringUtil::oss = std::ostringstream();
