@@ -1,9 +1,10 @@
 #include "Actor.h"
-
 #include "Item.h"
 #include "DataManager.h"
 #include "GameData.h"
 #include "Component.h"
+#include "StringUtil.h"
+
 Player::Player() : ItemUseable(this)
 , inventory(new InventoryComponent())
 , wallet(new CurrencyComponent())
@@ -61,7 +62,7 @@ void Player::levelUp()
 
     if (level >= 10)
     {
-        std::cout << "[LEVEL UP BLOCKED] Maximul level (10) reached.\n";
+        std::cerr << "[LEVEL UP BLOCKED] Maximul level (10) reached.\n"; //예외
         return;
     }
 
@@ -69,16 +70,18 @@ void Player::levelUp()
 
     if (level > 10)
     {
-        std::cerr << "[Warning] Abnormal level detected: " << level << ". Resetting to 10. \n";
+        std::cerr << "[Warning] Abnormal level detected: " << level << ". Resetting to 10. \n"; //예외
         level = 10;
         return;
     }
     setData(Manager<DataManager>::Instance()->playerData.getData(level));
 
-    std::cout << "NOW STATUS\n";
-    std::cout << "- HP: " << prevHP << " -> " << baseHP << "\n";
-    std::cout << "- ATK: " << prevDamage << GetIncDamageString() <<" -> " << baseDamage << GetIncDamageString() << "\n";
-    std::cout << "- DEF: " << prevDefense << " -> " << baseDefense << "\n";
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("LEVEL UP!!! NOW STATUS: ");
+    StringUtil::AppendLine("- HP: ", prevHP, " -> ", baseHP);
+    StringUtil::AppendLine("- ATK: ", prevDamage, " -> ", baseDamage);
+    StringUtil::AppendLine("- DEF: ", prevDefense, " -> ", baseDefense);
+    StringUtil::AppendEnd();
 }
 
 bool Player::IsNicknameEmpty()
@@ -150,7 +153,9 @@ void Player::setData(PlayerData* data)
 void Player::GainExp(int amount)
 {
     exp += amount;
-    std::cout << "\n[EXP] +" << amount << " (Current EXP: " << exp << "/100)\n";
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("[EXP] + ", amount, " (Current EXP: ", exp, "/100)");
+    StringUtil::AppendEnd();
     TryLevelUp();
 }
 // 250620 ����ġ �䱸�� �� ���� 10 ����
@@ -161,7 +166,10 @@ void Player::TryLevelUp()
         exp -= 100;
         levelUp();
 
-        std::cout << "[LEVEL UP] NOW " << level << " Level !!\n\n";
+        StringUtil::AppendStart();
+        StringUtil::Append();
+        StringUtil::AppendLine("[LEVEL UP] NEW ", level, " Level !!");
+        StringUtil::AppendEnd();
 
         IncreaseHP(baseHP);
     }
