@@ -145,10 +145,19 @@ void Player::setData(PlayerData* data)
     int prevIncDamage = incDamage;
     int prevIncDefense = incDefense;
 
-    std::cout << "\n\nHello! " << name << "\n";
-	std::cout << "HP: " << baseHP << "\n";
-    std::cout << "ATK: " << baseDamage << GetIncDamageString() << "\n";
-	std::cout << "Level: " << level << "\n\n";
+	if (!bIsInitialized)
+	{
+        StringUtil::AppendStart();
+        StringUtil::AppendLine();
+        StringUtil::AppendLine("Hello Player: ", name);
+        StringUtil::AppendLine("HP: ", baseHP);
+        StringUtil::AppendLine("ATK: ", baseDamage, GetIncDamageString());
+        StringUtil::AppendLine("Level: ", level);
+        StringUtil::AppendLine("HP: ", baseHP);
+        StringUtil::AppendLine();
+        StringUtil::AppendEnd();
+		bIsInitialized = true;
+	}
 }
 
 // 250620 ����ġ �� ������
@@ -157,7 +166,7 @@ void Player::GainExp(int amount)
     exp += amount;
     StringUtil::AppendStart();
     StringUtil::AppendLine("[EXP] + ", amount, " (Current EXP: ", exp, "/100)");
-    StringUtil::AppendEnd();
+    StringUtil::AppendEnd(0);
     TryLevelUp();
 }
 // 250620 ����ġ �䱸�� �� ���� 10 ����

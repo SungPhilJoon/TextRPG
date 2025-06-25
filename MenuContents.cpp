@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "Contents.h"
 #include "InputModule.h"
+#include "StringUtil.h"
 
 void MenuContents::InitContents()
 {
@@ -12,11 +13,13 @@ void MenuContents::InitContents()
 
 void MenuContents::EnterContents()
 {
-    std::cout << "Game Menu" << std::endl;
-    std::cout << "1. Go Combat" << std::endl;
-    std::cout << "2. Go Shop" << std::endl;
-	std::cout << "q. Quit Game" << std::endl;
-    std::cout << "Enter your choice:" << std::endl;
+	StringUtil::AppendStart();
+    StringUtil::AppendLine("Game Menu");
+	StringUtil::AppendLine("1. Go Combat");
+	StringUtil::AppendLine("2. Go Shop");
+	StringUtil::AppendLine("q. Quit Game");
+	StringUtil::AppendLine("Enter your choice:");
+	StringUtil::AppendEnd();
 }
 
 void MenuContents::ExitContents()

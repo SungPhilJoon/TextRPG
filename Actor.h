@@ -129,6 +129,7 @@ private:
 
     int exp = 0;
     int killCount = 0;
+	bool bIsInitialized = false;
 
     void levelUp();
     void TryLevelUp();

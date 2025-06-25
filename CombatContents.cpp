@@ -30,8 +30,10 @@ void CombatContents::EnterContents()
     MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
     monster->setData(data, player->GetLevel()); // 250620 플레이어 레벨 기준으로 능력치 생성위해 수정
 
-    std::cout << monster->getName() << " appeared! HP: " << monster->GetHP() << ", Damage: " << monster->GetDamage() << std::endl;
-
+    StringUtil::AppendStart();
+    StringUtil::AppendLine();
+	StringUtil::AppendLine("    << ", monster->getName(), " appeared! HP: ", monster->getName(), ", Damage: ", monster->GetDamage(), " >>");
+    StringUtil::AppendEnd(0);
     SetupBossMonster();
 }
 
@@ -77,25 +79,34 @@ bool CombatContents::HandlePlayerCommand(Command& command)
 void CombatContents::PlayerAttack()
 {
     player->attack(*monster);
-    std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
+    StringUtil::AppendStart();
+	StringUtil::AppendLine("    You attacked ", monster->getName(), "! [Monster HP: ", monster->GetHP(), "]"); 
+    StringUtil::AppendEnd(0);
 }
 
 void CombatContents::MonsterAttackBack()
 {
     monster->attack(*player);
-    std::cout << monster->getName() << " attacks! [Player HP: " << player->GetHP() << "]\n";
+    StringUtil::AppendStart();
+	StringUtil::AppendLine("    ", monster->getName(), " attacked you! [Player HP: ", player->GetHP(), "]");
+    StringUtil::AppendEnd(0);
 }
 
 bool CombatContents::IsActorDead()
 {
+    StringUtil::AppendStart();
     if (player->GetHP() <= 0) {
-        std::cout << "You died. Game Over.\n";
+        StringUtil::AppendLine("    You died. Game Over.");
+        StringUtil::AppendLine();
+		StringUtil::AppendEnd();
         player->IncreaseHP(player->GetBaseHP());
         return true;
     }
 
     if (monster->GetHP() <= 0) {
-        std::cout << "You defeated " << monster->getName() << "! Congratulations\n";
+		StringUtil::AppendLine("    You defeated ", monster->getName(), "! Congratulations");
+        StringUtil::AppendLine();
+        StringUtil::AppendEnd();
         if (monster->IsBoss())
         {
             GameClear();
@@ -118,14 +129,20 @@ void CombatContents::SetupBossMonster()
     if (player->GetLevel() < 10) return;
 
     monster->SetIsBoss(true);
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("    Boss ", monster->getName(), " enters the battlefield! [Boss HP: ", monster->GetBaseHP(), ", DMG: ", monster->GetDamage());
+    StringUtil::AppendEnd(0);
 
-    std::cout << "Boss " << monster->getName() << " enters the battlefield! [Boss HP: " << monster->GetBaseHP() << ", DMG: " << monster->GetDamage() << "]\n";
 }
 
 void CombatContents::GameClear()
 {
-    std::cout << "\nYou cleared the game! \nTotal Monsters Defeated: " << player->getMonsterKillCount() << "\n";
-	std::cout << "Thank you for playing!\n";
+	StringUtil::AppendStart();
+    StringUtil::AppendLine("You cleared the game!");
+	StringUtil::AppendLine("Total Monsters Defeated: ", player->getMonsterKillCount());
+    StringUtil::AppendLine("Thank you For Playing!");
+    StringUtil::AppendEnd();
+
 	monster->SetIsBoss(false);
 	delete monster;
 	monster = nullptr;
@@ -142,7 +159,7 @@ void CombatContents::GetStageClearReward()
     player->addGold(goldEarned);
     StringUtil::AppendStart();
     StringUtil::AppendLine("Get ",goldEarned, "Gold!!!");
-    StringUtil::AppendEnd();
+	StringUtil::AppendEnd(0);
 
     if (rand() % 100 < 30)
     {
@@ -151,7 +168,10 @@ void CombatContents::GetStageClearReward()
         
         StringUtil::AppendStart();
         StringUtil::AppendLine(Manager<DataManager>::Instance()->itemData.getData(itemID / 10000 - 1)->getName(), " Get Item!!!");
-        StringUtil::AppendEnd();
+		StringUtil::AppendEnd(0);
         
     }
+
+    StringUtil::AppendStart();
+	StringUtil::AppendEnd();
 }

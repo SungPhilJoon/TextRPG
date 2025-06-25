@@ -4,6 +4,7 @@
 #include "InputModule.h"
 #include "Contents.h"
 #include "Actor.h"
+#include "StringUtil.h"
 
 template<>
 GameManager* Manager<GameManager>::instance = nullptr;
@@ -53,14 +54,20 @@ void GameManager::EnterGame()
 {
     while (IsNickNameEmpty())
     {
+        StringUtil::AppendStart();
+        StringUtil::AppendLine("Welcome to the TextRPG Game!");
+        StringUtil::AppendLine("Please enter your nickname (without spaces):");
+        StringUtil::AppendEnd();
+
         std::string name;
 
-        std::cout << "Please enter your nickname" << std::endl;
         std::getline(std::cin, name); // std::cin >> name;
 
         if (name.find(' ') != std::string::npos)
         {
-            std::cout << "Please enter your nickname without space" << std::endl;
+			StringUtil::AppendStart();
+            StringUtil::AppendLine("Please enter your nickname without space");
+			StringUtil::AppendEnd(0);
             continue;
         }
 
