@@ -10,7 +10,7 @@
 int main(int argc, char* argv[])
 {
     std::vector<BaseManager*> managers;
-
+    srand(time(NULL));
     GameManager* gameManager = Manager<GameManager>::Instance();
     DataManager* dataManager = Manager<DataManager>::Instance();
     

@@ -6,6 +6,7 @@
 #include "Manager.h"
 #include "InputModule.h"
 #include "GameManager.h"
+#include "ItemFactory.h"
 
 void CombatContents::InitContents()
 {
@@ -137,13 +138,12 @@ void CombatContents::GetStageClearReward()
     int goldEarned = rand() % 11 + 10;
     player->addGold(goldEarned);
 
-    /*
     if (rand() % 100 < 30)
     {
-        int itemID = 10001 + rand() % 2;
-        ItemData* data = Manager<DataManager>::Instance()->itemData.getData(itemID);
-        Item* rewardItem = ItemFactory::CreateItem(data); ¿À·ù
-        player->addItem(*rewardItem);
+        int itemID = 10001 + (rand() % 2)*10000;
+        player->addItem(itemID);
+        
         std::cout << "GetItem!!!" << "Congratulations\n";
-    }*/
+        
+    }
 }
