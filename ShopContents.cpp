@@ -52,13 +52,15 @@ void ShopContents::BindBuyHandler()
 void ShopContents::ShowMenu()
 {
     
-    std::cout << "Shop Menu" << std::endl;
-    std::cout << "1. BuyItem" << std::endl;
-    std::cout << "2. SellItem" << std::endl;
-    std::cout << "e. Quit Shop" << std::endl;
-    std::cout << "q. Quit Game" << std::endl;
-    std::cout << "Enter your choice:" << std::endl;
-    std::cout <<"Current Gold : "<<player->getGold()<<std::endl;
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("Shop Menu");
+    StringUtil::AppendLine("1. BuyItem");
+    StringUtil::AppendLine("2. SellItem");
+    StringUtil::AppendLine("e. Quit Shop");
+    StringUtil::AppendLine("q. Quit Game");
+    StringUtil::AppendLine("Enter your choice:");
+    StringUtil::AppendLine("Current Gold : ", player->getGold());
+    StringUtil::AppendEnd();
 }
 
 bool ShopContents::HandleSelectContents(Command& command)
@@ -76,13 +78,19 @@ bool ShopContents::HandleSelectContents(Command& command)
         break;
 
     case 'e': //���� ������
-        std::cout << "Exiting shop" << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::AppendLine("Exiting shop");
+        StringUtil::AppendEnd();
         return false;  // ���� ���� ��ȣ
     case 'q':
-        std::cout << "Quit Game" << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::AppendLine("Quit Game");
+        StringUtil::AppendEnd();
         return false;  // ���� ���� ��ȣ
     default:
-        std::cout << "Invalid input, please reinput." << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::AppendLine("Invalid input, please reinput.");
+        StringUtil::AppendEnd();
         return true;
     }
     return true;
@@ -97,18 +105,24 @@ bool ShopContents::HandleBuySelect(Command& command)
         if (player->reduceGold(shopItems[idx]->getValue())) // ���� �ߴٸ�?
         {
             player->addItem(shopItems[idx]->getIndex());
-            std::cout << "Buy " << shopItems[idx]->getName() << "!!!" << std::endl;
+            StringUtil::AppendStart();
+            StringUtil::AppendLine("BuyItem: ", shopItems[idx]->getName());
+            StringUtil::AppendEnd();
 
         }
         else
         {
-            std::cout << "Not Enough Money" << std::endl;
+            StringUtil::AppendStart();
+            StringUtil::AppendLine("Not Enough Money");
+            StringUtil::AppendEnd();
 
         }
     }
     else
     {
-        std::cout << "error idx" << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::AppendLine("error idx");
+        StringUtil::AppendEnd();
 
     }
     BindSelectHandler();
@@ -122,13 +136,20 @@ bool ShopContents::HandleSellSelect(Command& command)
     if (idx >= 0 && player->getInventory().size() > idx)
     {
         int addGold = player->getInventory()[idx]->getValue()*6/10;
+        std::string itemName = player->getInventory()[idx]->getName();
         player->reduceItem(idx);
         player->addGold(addGold);
-        std::cout << "SellItem" << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::NewLine();
+        StringUtil::AppendLine("SellItem: ", itemName);
+        StringUtil::AppendEnd();
     }
     else
     {
-        std::cout << "error idx" << std::endl;
+        StringUtil::AppendStart();
+        StringUtil::NewLine();
+        StringUtil::AppendLine("error idx");
+        StringUtil::AppendEnd();
 
     }
     BindSelectHandler();

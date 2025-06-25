@@ -95,7 +95,9 @@ const std::vector<Item*>& Player::getInventory() const
     {
         return inventory->getInventory();
     }
-    std::cout << "Inventory is empty." << std::endl;
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("Inventory is empty.");
+    StringUtil::AppendEnd();
     throw std::runtime_error("Inventory is null");
 }
 

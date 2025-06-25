@@ -7,6 +7,8 @@
 #include "InputModule.h"
 #include "GameManager.h"
 #include "ItemFactory.h"
+#include "StringUtil.h"
+#include "GameData.h"
 
 void CombatContents::InitContents()
 {
@@ -132,18 +134,24 @@ void CombatContents::GameClear()
 
 void CombatContents::GetStageClearReward()
 {
+    
     player->GainExp(50);
 
     // °ñµå ¾ò±â 10 ~ 20
     int goldEarned = rand() % 11 + 10;
     player->addGold(goldEarned);
+    StringUtil::AppendStart();
+    StringUtil::AppendLine("Get ",goldEarned, "Gold!!!");
+    StringUtil::AppendEnd();
 
     if (rand() % 100 < 30)
     {
         int itemID = 10001 + (rand() % 2)*10000;
         player->addItem(itemID);
         
-        std::cout << "GetItem!!!" << "Congratulations\n";
+        StringUtil::AppendStart();
+        StringUtil::AppendLine(Manager<DataManager>::Instance()->itemData.getData(itemID / 10000 - 1)->getName(), " Get Item!!!");
+        StringUtil::AppendEnd();
         
     }
 }
