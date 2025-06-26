@@ -160,7 +160,6 @@ void Player::setData(PlayerData* data)
         StringUtil::AppendLine("HP: ", baseHP);
         StringUtil::AppendLine("ATK: ", baseDamage, GetIncDamageString());
         StringUtil::AppendLine("Level: ", level);
-        StringUtil::AppendLine("HP: ", baseHP);
         StringUtil::AppendLine();
         StringUtil::AppendEnd();
 		bIsInitialized = true;
